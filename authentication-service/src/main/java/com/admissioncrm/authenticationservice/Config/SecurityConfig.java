@@ -53,7 +53,7 @@ public class SecurityConfig {
 
 
                 // Role-based endpoints
-                authorize.requestMatchers("/auth/admin/**").hasAnyRole("UNIVERSITY_ADMIN", "INSTITUTE_ADMIN");
+                authorize.requestMatchers("/api/auth/admin/**").hasAnyRole("UNIVERSITY_ADMIN", "INSTITUTE_ADMIN");
                 authorize.requestMatchers("/api/university-admin/**").hasRole("UNIVERSITY_ADMIN");
                 authorize.requestMatchers("/api/institute-admin/**").hasAnyRole("UNIVERSITY_ADMIN", "INSTITUTE_ADMIN");
                 authorize.requestMatchers("/api/counsellor/**").hasAnyRole("UNIVERSITY_ADMIN", "INSTITUTE_ADMIN", "COUNSELLOR");

@@ -1,6 +1,9 @@
 package com.admissioncrm.authenticationservice.Entities.CoreEntities;
 
 
+import com.admissioncrm.authenticationservice.Entities.CounsellorDetails;
+import com.admissioncrm.authenticationservice.Entities.InstituteAdminDetails;
+import com.admissioncrm.authenticationservice.Enums.Institute;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -23,6 +26,13 @@ import java.util.List;
 @Setter
 
 public class User  {
+
+    @OneToOne(mappedBy = "user")
+    private InstituteAdminDetails instituteAdminDetails;
+
+    @OneToOne(mappedBy = "user")
+    private CounsellorDetails counsellorDetails;
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
@@ -219,6 +229,14 @@ public class User  {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public InstituteAdminDetails getInstituteAdminDetails() {
+        return instituteAdminDetails;
+    }
+
+    public CounsellorDetails getCounsellorDetails() {
+        return counsellorDetails;
     }
 
 }

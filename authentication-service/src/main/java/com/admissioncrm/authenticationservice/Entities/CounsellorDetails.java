@@ -1,9 +1,19 @@
 package com.admissioncrm.authenticationservice.Entities;
 
 import com.admissioncrm.authenticationservice.Entities.CoreEntities.User;
+import com.admissioncrm.authenticationservice.Enums.Institute;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.*;
+import lombok.NoArgsConstructor;
+
 
 @Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class CounsellorDetails {
     @Id
     private String id;
@@ -13,17 +23,26 @@ public class CounsellorDetails {
     @JoinColumn(name = "id")
     private User user;
 
-    private String assignedInstitute;
+    @Enumerated(EnumType.STRING)
+    private Institute institute;
     private String expertiseArea;
     // more counsellor-specific fields
 
 
-    public String getId() {
-        return id;
+    public String getExpertiseArea() {
+        return expertiseArea;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setExpertiseArea(String expertiseArea) {
+        this.expertiseArea = expertiseArea;
+    }
+
+    public Institute getInstitute() {
+        return institute;
+    }
+
+    public void setInstitute(Institute institute) {
+        this.institute = institute;
     }
 
     public User getUser() {
@@ -34,19 +53,11 @@ public class CounsellorDetails {
         this.user = user;
     }
 
-    public String getAssignedInstitute() {
-        return assignedInstitute;
+    public String getId() {
+        return id;
     }
 
-    public void setAssignedInstitute(String assignedInstitute) {
-        this.assignedInstitute = assignedInstitute;
-    }
-
-    public String getExpertiseArea() {
-        return expertiseArea;
-    }
-
-    public void setExpertiseArea(String expertiseArea) {
-        this.expertiseArea = expertiseArea;
+    public void setId(String id) {
+        this.id = id;
     }
 }
