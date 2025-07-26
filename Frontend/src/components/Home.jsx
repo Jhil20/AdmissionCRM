@@ -63,7 +63,7 @@ export default function Home() {
       role: "Director of Admissions, State University",
       content: "EduCRM has revolutionized how we handle applications. Our processing time has decreased by 60% while maintaining quality.",
       rating: 5,
-      image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face"
+      image: "https://images.unsplash.com/photo-1692952565559-a7c9ac80ea98?q=80&w=464&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
     },
     {
       name: "James Rodriguez",
@@ -104,7 +104,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="max-h-screen bg-white">
       {/* Animated background */}
       <div className="fixed inset-0 z-0">
         <div className="absolute inset-0 bg-gradient-to-br from-emerald-50 via-teal-50 to-blue-50"></div>
@@ -271,7 +271,7 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="relative z-10 py-20 bg-gradient-to-r from-emerald-600 to-teal-700">
+      <section className="relative z-10 py-20 bg-gradient-to-r from-emerald-600 to-teal-700 rounded-3xl">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-4xl lg:text-5xl font-bold mb-6 text-white">
             Ready to Transform Your Admissions?
@@ -289,9 +289,12 @@ export default function Home() {
           </div>
         </div>
       </section>
+      <div className='py-5'>
+
+      </div>
 
       {/* Footer */}
-        <Footer />
+        <Footer/>
       
     </div>
   );
