@@ -1,16 +1,23 @@
 import { useState } from 'react';
 import { Mail, Lock, ArrowRight, Eye, EyeOff } from 'lucide-react';
+import {useDispatch} from "react-redux";
+import {login,logout} from "../../Slices/AuthSlice"
 
-export default function Login({ onLogin }) {
+
+export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [success, setSuccess] = useState('');
+  const dispatch = useDispatch()
+
 
   const handleSubmit = async () => {
     setError('');
     setIsLoading(true);
+    setSuccess('')
     
     try {
       const res = await fetch('http://localhost:8000/auth/login', {
@@ -21,10 +28,11 @@ export default function Login({ onLogin }) {
       
       if (!res.ok) throw new Error('Invalid credentials');
       const data = await res.json();
-      console.log(data);
+      dispatch(login(data))
+      setSuccess(`Login successfully : ${data.role}`)
       
-      if (onLogin) onLogin(data.jwtToken);
     } catch (err) {
+      dispatch(logout())
       setError(err.message);
     } finally {
       setIsLoading(false);
@@ -145,6 +153,11 @@ export default function Login({ onLogin }) {
               {error && (
                 <div className="bg-red-50/80 border border-red-200/50 text-red-600 px-4 py-3 rounded-xl text-sm backdrop-blur-sm">
                   {error}
+                </div>
+              )}
+              {success && (
+                <div className="bg-red-50/80 border border-red-200/50 text-green-600 px-4 py-3 rounded-xl text-sm backdrop-blur-sm">
+                  {success}
                 </div>
               )}
 
