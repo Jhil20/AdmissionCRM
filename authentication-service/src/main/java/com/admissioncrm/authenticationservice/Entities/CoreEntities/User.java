@@ -1,6 +1,8 @@
 package com.admissioncrm.authenticationservice.Entities.CoreEntities;
 
 
+import com.admissioncrm.authenticationservice.Entities.CounsellorDetails;
+import com.admissioncrm.authenticationservice.Entities.InstituteAdminDetails;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -21,7 +23,6 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-
 public class User  {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -48,16 +49,13 @@ public class User  {
     @Enumerated(EnumType.STRING)
     private Role role = Role.STUDENT;
 
-//    @JoinColumn(name = "university_id")
-//    private String universityId;
-//
-//    @JoinColumn(name = "institution_id")
-//    private String institutionId;
+    /* Mapping with different tables*/
 
-//    @OneToMany(mappedBy = "assignedCounselor", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @ElementCollection
-    @CollectionTable(name = "assigned_leads", joinColumns = @JoinColumn(name = "user_id"))
-    private List<String> assignedLeads = new ArrayList<>();
+    @OneToOne(mappedBy = "userId")
+    private CounsellorDetails councellorId;
+
+    @OneToOne(mappedBy = "userId")
+    private InstituteAdminDetails instituteAdminId;
 
     @Column(name = "max_leads_assignment")
     private Integer maxLeadsAssignment = 50;
@@ -163,14 +161,6 @@ public class User  {
 
     public void setRole(Role role) {
         this.role = role;
-    }
-
-    public List<String> getAssignedLeads() {
-        return assignedLeads;
-    }
-
-    public void setAssignedLeads(List<String> assignedLeads) {
-        this.assignedLeads = assignedLeads;
     }
 
     public Integer getMaxLeadsAssignment() {

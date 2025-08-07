@@ -2,51 +2,51 @@ package com.admissioncrm.authenticationservice.Entities;
 
 import com.admissioncrm.authenticationservice.Entities.CoreEntities.User;
 import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDateTime;
+
+@Data
 @Entity
+@Table(name = "counsellors")
 public class CounsellorDetails {
     @Id
-    private String id;
+    @Column(name = "councellorId")
+    private String id; // Same as User ID (UUID)+
 
     @OneToOne
     @MapsId
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "user_id")
     private User user;
 
-    private String assignedInstitute;
-    private String expertiseArea;
-    // more counsellor-specific fields
+    @Column(name = "specialization", length = 100)
+    private String specialization;
 
+    @Column(name = "bio", length = 500)
+    private String bio;
 
-    public String getId() {
-        return id;
-    }
+    @Column(name = "max_queries_handling")
+    private Integer maxQueriesHandling = 100;
 
-    public void setId(String id) {
-        this.id = id;
-    }
+    @Column(name = "current_queries_count")
+    private Integer currentQueriesCount = 0;
 
-    public User getUser() {
-        return user;
-    }
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "userId",referencedColumnName = "id")
+    private User userId;
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+    @ManyToOne
+    @JoinColumn(name = "InstituteId",referencedColumnName = "counsellorId")
+    private Institution institutionId;
 
-    public String getAssignedInstitute() {
-        return assignedInstitute;
-    }
+    @CreationTimestamp
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
-    public void setAssignedInstitute(String assignedInstitute) {
-        this.assignedInstitute = assignedInstitute;
-    }
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
-    public String getExpertiseArea() {
-        return expertiseArea;
-    }
-
-    public void setExpertiseArea(String expertiseArea) {
-        this.expertiseArea = expertiseArea;
-    }
 }
