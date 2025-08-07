@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Mail, Lock, ArrowRight, Eye, EyeOff } from 'lucide-react';
-import {useDispatch} from "react-redux";
-import {login,logout} from "../../Slices/AuthSlice"
+import { useDispatch } from "react-redux";
+import { login, logout } from "../../Slices/AuthSlice"
+import { useNavigate } from 'react-router-dom';
 
 
 export default function Login() {
@@ -13,24 +14,37 @@ export default function Login() {
   const [success, setSuccess] = useState('');
   const dispatch = useDispatch()
 
+  const navigate = useNavigate();
 
   const handleSubmit = async () => {
     setError('');
     setIsLoading(true);
     setSuccess('')
-    
+
     try {
       const res = await fetch('http://localhost:8000/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ "identifier": email, "password": password }),
       });
-      
+
       if (!res.ok) throw new Error('Invalid credentials');
       const data = await res.json();
+      console.log('Login response data:', data);
+      console.log('Role received:', data.role);
       dispatch(login(data))
       setSuccess(`Login successfully : ${data.role}`)
-      
+
+      if (data.role === 'UNIVERSITY_ADMIN') {
+        navigate('/superadmin/dashboard');
+      } else if (data.role === 'INSTITUTE_ADMIN') {
+        navigate('/admin/dashboard');
+      } else if (data.role === 'counsellor') {
+        navigate('/counsellor/COUNSELLOR');
+      } else {
+        navigate('/'); // fallback or user dashboard
+      }
+
     } catch (err) {
       dispatch(logout())
       setError(err.message);
@@ -48,18 +62,18 @@ export default function Login() {
           {/* Top Layer Shapes */}
           <div className="absolute top-10 left-10 w-96 h-32 bg-gradient-to-r from-emerald-400/30 to-transparent rounded-3xl transform rotate-12 blur-2xl"></div>
           <div className="absolute top-20 right-20 w-80 h-80 bg-gradient-to-l from-teal-400/20 to-transparent rounded-full transform -rotate-12 blur-3xl"></div>
-          
+
           {/* Middle Layer Shapes */}
           <div className="absolute top-1/3 left-1/4 w-72 h-72 bg-gradient-to-tr from-cyan-400/25 to-transparent rounded-full blur-2xl"></div>
           <div className="absolute top-1/2 right-1/3 w-64 h-64 bg-gradient-to-bl from-emerald-300/30 to-transparent rounded-full blur-2xl"></div>
-          
+
           {/* Bottom Layer Shapes */}
           <div className="absolute bottom-20 left-20 w-80 h-40 bg-gradient-to-r from-teal-300/40 to-transparent rounded-2xl transform -rotate-6 blur-2xl"></div>
           <div className="absolute bottom-40 right-10 w-96 h-32 bg-gradient-to-l from-cyan-400/30 to-transparent rounded-3xl transform rotate-12 blur-2xl"></div>
-          
+
           {/* Floating Accent Shapes */}
           <div className="absolute top-1/4 right-1/4 w-24 h-24 bg-white/10 rounded-full blur-xl animate-pulse"></div>
-          <div className="absolute bottom-1/4 left-1/3 w-32 h-32 bg-white/10 rounded-full blur-xl animate-pulse" style={{animationDelay: '1s'}}></div>
+          <div className="absolute bottom-1/4 left-1/3 w-32 h-32 bg-white/10 rounded-full blur-xl animate-pulse" style={{ animationDelay: '1s' }}></div>
         </div>
 
         {/* Content - Fixed Position */}
@@ -74,7 +88,7 @@ export default function Login() {
           <p className="text-xl md:text-2xl text-emerald-50 leading-relaxed font-light mb-8">
             Transform your institution's admission process with our comprehensive CRM platform.
           </p>
-          
+
           {/* Stats - Fixed Grid */}
           <div className="grid grid-cols-3 gap-8 mb-8">
             <div>
@@ -186,8 +200,8 @@ export default function Login() {
                   <input type="checkbox" className="rounded mr-2 focus:ring-emerald-500 text-emerald-600" />
                   Remember me
                 </label>
-                <button 
-                  onClick={() => window.location.href = '/forgot-password'} 
+                <button
+                  onClick={() => window.location.href = '/forgot-password'}
                   className="text-emerald-600 hover:text-emerald-700 font-medium transition-colors"
                 >
                   Forgot Password?
