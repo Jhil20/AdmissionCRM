@@ -1,15 +1,13 @@
 package com.admissioncrm.authenticationservice.Services;
 
 import com.admissioncrm.authenticationservice.Entities.CoreEntities.User;
-import com.admissioncrm.authenticationservice.Entities.UserPrinciple;
+import com.admissioncrm.authenticationservice.Utilities.CustomUserPrinciple;
 import com.admissioncrm.authenticationservice.Repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
-
-import java.util.Optional;
 
 @Component
 public class CustomUserDetailsService implements UserDetailsService {
@@ -19,7 +17,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String identifier) throws UsernameNotFoundException {
 
         User user=getUserByIdentifier(identifier);
-        return new UserPrinciple(user);
+        return new CustomUserPrinciple(user);
     }
 
     private User getUserByIdentifier(String identifier) {

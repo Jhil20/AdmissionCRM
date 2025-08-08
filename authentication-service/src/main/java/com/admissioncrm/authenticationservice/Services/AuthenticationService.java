@@ -51,7 +51,7 @@ public class AuthenticationService {
 
         //generate the token
         try{
-            String jwtToken = jwtUtils.generateToken(user.getUsername(), user.getRole());
+            String jwtToken = jwtUtils.generateToken(user.getUsername(), user.getRole(), user.getId());
             return ResponseEntity.ok(new JwtResponse(jwtToken, user.getRole()));
         }catch(Exception e)
         {
@@ -82,7 +82,7 @@ public class AuthenticationService {
             user.setPassword(passwordEncoder.encode(request.getPassword()));
             user.setRole(Role.STUDENT);
 
-            userRepository.save(user);
+            user = userRepository.save(user);
             //Also add save the Student Details Entity in future for more user specific details
 
 
@@ -90,7 +90,7 @@ public class AuthenticationService {
                     new UsernamePasswordAuthenticationToken(request.getMobileNumber(), request.getPassword())
             );
 
-            String jwtToken = jwtUtils.generateToken(user.getUsername(), Role.STUDENT);
+            String jwtToken = jwtUtils.generateToken(user.getUsername(), Role.STUDENT, user.getId());
             return new JwtResponse(jwtToken, Role.STUDENT);
 
 

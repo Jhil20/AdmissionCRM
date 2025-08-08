@@ -22,8 +22,9 @@ public class JwtUtils {
 
     private static final String SECRET_KEY = "1f1dada12ecf13b34cba99d384dc943dfbcbcdb25e6e21fbd37aeedffbcf1c88";
 
-    public String generateToken(String username, Role role) {
+    public String generateToken(String username, Role role,String userId) {
 
+        claims.put("userId",userId);
         claims.put("role",role);
         return Jwts.builder()
                 .claims().add(claims)
@@ -40,13 +41,16 @@ public class JwtUtils {
     public String extractUserName(String token) {
         return extractClaim(token, Claims::getSubject);
     }
+    public String extractUserIdFromToken(String token) {
+        return extractAllClaims(token).get("userId", String.class);
+    }
 
     private <T> T extractClaim(String token, Function<Claims, T> claimResolver) {
         final Claims claims = extractAllClaims(token);
         return claimResolver.apply(claims);
     }
 
-    private Claims extractAllClaims(String token) {
+    public Claims extractAllClaims(String token) {
         return Jwts.parser()
                 .verifyWith(getKey())
                 .build()
