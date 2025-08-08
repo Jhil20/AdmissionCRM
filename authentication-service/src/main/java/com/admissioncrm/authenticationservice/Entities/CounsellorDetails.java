@@ -1,63 +1,52 @@
 package com.admissioncrm.authenticationservice.Entities;
 
 import com.admissioncrm.authenticationservice.Entities.CoreEntities.User;
-import com.admissioncrm.authenticationservice.Enums.Institute;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.*;
-import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDateTime;
 
-@Entity
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Entity
+@Table(name = "counsellors")
 public class CounsellorDetails {
     @Id
-    private String id;
+    @Column(name = "councellorId")
+    private String id; // Same as User ID (UUID)+
 
     @OneToOne
     @MapsId
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "user_id")
     private User user;
 
-    @Enumerated(EnumType.STRING)
-    private Institute institute;
-    private String expertiseArea;
-    // more counsellor-specific fields
+    @Column(name = "specialization", length = 100)
+    private String specialization;
 
+    @Column(name = "bio", length = 500)
+    private String bio;
 
-    public String getExpertiseArea() {
-        return expertiseArea;
-    }
+    @Column(name = "max_queries_handling")
+    private Integer maxQueriesHandling = 100;
 
-    public void setExpertiseArea(String expertiseArea) {
-        this.expertiseArea = expertiseArea;
-    }
+    @Column(name = "current_queries_count")
+    private Integer currentQueriesCount = 0;
 
-    public Institute getInstitute() {
-        return institute;
-    }
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "userId",referencedColumnName = "id")
+    private User userId;
 
-    public void setInstitute(Institute institute) {
-        this.institute = institute;
-    }
+    @ManyToOne
+    @JoinColumn(name = "InstituteId",referencedColumnName = "counsellorId")
+    private Institution institutionId;
 
-    public User getUser() {
-        return user;
-    }
+    @CreationTimestamp
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 }

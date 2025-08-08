@@ -17,6 +17,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "leads")
@@ -28,57 +29,9 @@ public class Lead {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @Column(name = "first_name", nullable = false, length = 50)
-    private String firstName;
-
-    @Column(name = "last_name", nullable = false, length = 50)
-    private String lastName;
-
-    @Column(nullable = false, length = 100)
-    private String email;
-
-    @Column(nullable = false, length = 15)
-    private String phone;
-
-    @Column(name = "alternate_phone", length = 15)
-    private String alternatePhone;
-
-    @Column(name = "date_of_birth")
-    private LocalDate dateOfBirth;
-
-    @Enumerated(EnumType.STRING)
-    private Gender gender;
-
-    @Column(columnDefinition = "TEXT")
-    private String address;
-
-    @Column(length = 50)
-    private String city;
-
-    @Column(length = 50)
-    private String state;
-
-    @Column(length = 50)
-    private String country;
-
-    @Column(length = 10)
-    private String pinCode;
+    private String userId;
 
     private String institutionId;
-
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "lead_source_id")
-//    private LeadSource leadSource;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "assigned_counselor_id")
-    private User assignedCounselor;
-
-    private LeadStatus status;
-    private Integer leadScore;
-
-    @Enumerated(EnumType.STRING)
-    private Priority priority;
 
     @Column(length = 100)
     private String qualification;
@@ -88,29 +41,8 @@ public class Lead {
     @Column(name = "budget_range", length = 50)
     private String budgetRange;
 
-    @Column(name = "preferred_intake", length = 20)
-    private String preferredIntake;
-
     @Column(columnDefinition = "TEXT")
-    private String notes;
-
-    @Column(columnDefinition = "JSON")
-    private String tags;
-
-    @Column(name = "custom_fields", columnDefinition = "JSON")
-    private String customFields;
-
-    @CollectionTable
-    private List<String> communications = new ArrayList<>();
-
-    @CollectionTable
-    private List<String> followUps = new ArrayList<>();
-
-    @CollectionTable
-    private List<String> applications = new ArrayList<>();
-
-    @CollectionTable
-    private List<String> activities = new ArrayList<>();
+    private String description;
 
     @CreationTimestamp
     @Column(name = "created_at")
@@ -119,16 +51,4 @@ public class Lead {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-
-    public String getFullName() {
-        return firstName + " " + lastName;
-    }
-
-    public enum Gender {
-        MALE, FEMALE, OTHER
-    }
-
-    public enum Priority {
-        LOW, MEDIUM, HIGH, URGENT
-    }
 }

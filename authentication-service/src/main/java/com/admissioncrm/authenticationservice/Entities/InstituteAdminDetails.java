@@ -1,56 +1,70 @@
 package com.admissioncrm.authenticationservice.Entities;
 
 import com.admissioncrm.authenticationservice.Entities.CoreEntities.User;
-import com.admissioncrm.authenticationservice.Enums.Institute;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.*;
-import lombok.NoArgsConstructor;
+import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDateTime;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Data
 @Entity
-public class InstituteAdminDetails {
+@Table(name = "institutional_admins")
+public class    InstituteAdminDetails {
+
     @Id
-    private String id;
+    private String id; // Same as User ID (UUID)
 
     @OneToOne
     @MapsId
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "user_id")
     private User user;
 
+    @Column(name = "designation", length = 100)
+    private String designation = "Admission Coordinator";
 
+    // Contact
+    @Column(name = "office_phone", length = 15)
+    private String officePhone;
 
-    @Enumerated(EnumType.STRING)
-    private Institute institute;//we can store pk of institute table from another microservice
+    @Column(name = "alternate_email", length = 100)
+    private String alternateEmail;
 
-    // other fields like job title, permissions, etc.
+    // Permissions & Limits
+    @Column(name = "max_counsellors_allowed")
+    private Integer maxCounsellorsAllowed = 20;
 
+    @Column(name = "max_lead_pool_size")
+    private Integer maxLeadPoolSize = 1000;
 
-    public String getId() {
-        return id;
-    }
+    // Work Monitoring
+    @Column(name = "total_counsellors_managed")
+    private Integer totalCounsellorsManaged = 0;
 
-    public void setId(String id) {
-        this.id = id;
-    }
+    @Column(name = "active_leads")
+    private Integer activeLeads = 0;
 
-    public User getUser() {
-        return user;
-    }
+    @Column(name = "resolved_queries_count")
+    private Integer resolvedQueriesCount = 0;
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "userId",referencedColumnName = "id")
+    private User userId;
 
-    public Institute getInstitute() {
-        return institute;
-    }
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "institutionId",referencedColumnName = "id")
+    private Institution institutionId;
 
-    public void setInstitute(Institute institute) {
-        this.institute = institute;
-    }
+    // Audit
+    @Column(name = "last_activity_time")
+    private LocalDateTime lastActivityTime;
+
+    @CreationTimestamp
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 }
