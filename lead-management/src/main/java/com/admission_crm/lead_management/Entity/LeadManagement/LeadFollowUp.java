@@ -22,9 +22,6 @@ public class LeadFollowUp {
     private String counselorId;
 
     @Enumerated(EnumType.STRING)
-    private LeadStatus status = LeadStatus.NEW;
-
-    @Enumerated(EnumType.STRING)
     private FollowUpType followUpType;
 
     private LocalDateTime followUpDate;

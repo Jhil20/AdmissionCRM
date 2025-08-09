@@ -44,6 +44,9 @@ public class Lead {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    @Enumerated(EnumType.STRING)
+    private LeadStatus status;
+
     @CreationTimestamp
     @Column(name = "created_at")
     private LocalDateTime createdAt;
