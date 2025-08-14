@@ -47,7 +47,8 @@ public class SecurityConfig {
                         "/auth/sadmin/login",
                         "/auth/iadmin/login",
                         "/auth/login",
-                        "/actuator/**"
+                        "/actuator/**",
+                        "/error"
                 ).permitAll();
 
 

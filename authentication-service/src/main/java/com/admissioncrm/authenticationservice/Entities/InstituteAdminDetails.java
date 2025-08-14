@@ -67,4 +67,124 @@ public class    InstituteAdminDetails {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public String getDesignation() {
+        return designation;
+    }
+
+    public void setDesignation(String designation) {
+        this.designation = designation;
+    }
+
+    public String getOfficePhone() {
+        return officePhone;
+    }
+
+    public void setOfficePhone(String officePhone) {
+        this.officePhone = officePhone;
+    }
+
+    public String getAlternateEmail() {
+        return alternateEmail;
+    }
+
+    public void setAlternateEmail(String alternateEmail) {
+        this.alternateEmail = alternateEmail;
+    }
+
+    public Integer getMaxCounsellorsAllowed() {
+        return maxCounsellorsAllowed;
+    }
+
+    public void setMaxCounsellorsAllowed(Integer maxCounsellorsAllowed) {
+        this.maxCounsellorsAllowed = maxCounsellorsAllowed;
+    }
+
+    public Integer getMaxLeadPoolSize() {
+        return maxLeadPoolSize;
+    }
+
+    public void setMaxLeadPoolSize(Integer maxLeadPoolSize) {
+        this.maxLeadPoolSize = maxLeadPoolSize;
+    }
+
+    public Integer getTotalCounsellorsManaged() {
+        return totalCounsellorsManaged;
+    }
+
+    public void setTotalCounsellorsManaged(Integer totalCounsellorsManaged) {
+        this.totalCounsellorsManaged = totalCounsellorsManaged;
+    }
+
+    public Integer getActiveLeads() {
+        return activeLeads;
+    }
+
+    public void setActiveLeads(Integer activeLeads) {
+        this.activeLeads = activeLeads;
+    }
+
+    public Integer getResolvedQueriesCount() {
+        return resolvedQueriesCount;
+    }
+
+    public void setResolvedQueriesCount(Integer resolvedQueriesCount) {
+        this.resolvedQueriesCount = resolvedQueriesCount;
+    }
+
+    public User getUserId() {
+        return userId;
+    }
+
+    public void setUserId(User userId) {
+        this.userId = userId;
+    }
+
+    public Institution getInstitutionId() {
+        return institutionId;
+    }
+
+    public void setInstitutionId(Institution institutionId) {
+        this.institutionId = institutionId;
+    }
+
+    public LocalDateTime getLastActivityTime() {
+        return lastActivityTime;
+    }
+
+    public void setLastActivityTime(LocalDateTime lastActivityTime) {
+        this.lastActivityTime = lastActivityTime;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 }

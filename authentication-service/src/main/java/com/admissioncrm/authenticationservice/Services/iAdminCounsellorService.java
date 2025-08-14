@@ -1,6 +1,8 @@
 package com.admissioncrm.authenticationservice.Services;
 
 import com.admissioncrm.authenticationservice.DTO.ApiResponse;
+import com.admissioncrm.authenticationservice.DTO.iAdminCounsellorCreation.CreateCounsellorRequest;
+import com.admissioncrm.authenticationservice.DTO.iAdminCounsellorCreation.CreateInstituteAdminRequest;
 import com.admissioncrm.authenticationservice.DTO.iAdminCounsellorCreation.UserCreateRequest;
 import com.admissioncrm.authenticationservice.Entities.CoreEntities.Role;
 import com.admissioncrm.authenticationservice.Entities.CoreEntities.User;
@@ -10,7 +12,9 @@ import com.admissioncrm.authenticationservice.ExceptionHandling.ApiException;
 import com.admissioncrm.authenticationservice.ExceptionHandling.UsernameAlreadyExistsException.UsernameAlreadyExistsException;
 import com.admissioncrm.authenticationservice.Repositories.CounsellorRepository;
 import com.admissioncrm.authenticationservice.Repositories.InstituteAdminRepository;
+import com.admissioncrm.authenticationservice.Repositories.InstitutionRepository;
 import com.admissioncrm.authenticationservice.Repositories.UserRepository;
+import com.admissioncrm.authenticationservice.Entities.Institution;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,51 +33,74 @@ public class iAdminCounsellorService {
     private InstituteAdminRepository adminRepository;
 
     @Autowired
+    private InstitutionRepository institutionRepository;
+
+    @Autowired
     private CounsellorRepository counsellorRepository;
 
-    public ResponseEntity<?> createInstituteAdmin(UserCreateRequest request) throws UsernameAlreadyExistsException {
-        return createUserFromDTO(request, Role.INSTITUTE_ADMIN);
+
+public ResponseEntity<?> createInstituteAdmin(CreateInstituteAdminRequest request)
+        throws UsernameAlreadyExistsException {
+
+    System.out.println("DEBUG: Looking for institute name = [" + request.getInstituteName() + "]");
+
+    // Step 1: Create User (common)
+    User user = createUser(request, Role.INSTITUTE_ADMIN);
+
+    // Step 2: Fetch institution
+    Institution institution = institutionRepository.findByInstituteName(request.getInstituteName())
+            .orElseThrow(() -> new RuntimeException("Institution not found"));
+
+    // Step 3: Save institute admin details
+    InstituteAdminDetails adminDetails = new InstituteAdminDetails();
+    adminDetails.setUser(user);
+    adminDetails.setInstitutionId(institution);
+    adminDetails.setDesignation(request.getDesignation());
+    adminDetails.setAlternateEmail(request.getAlternateEmail());
+
+    adminRepository.save(adminDetails);
+
+    return ResponseEntity.ok(ApiResponse.success("Institute Admin created successfully"));
+}
+
+    public ResponseEntity<?> createCounsellor(CreateCounsellorRequest request)
+            throws UsernameAlreadyExistsException {
+
+        // Step 1: Create User (common)
+        User user = createUser(request, Role.COUNSELOR);
+
+        // Step 2: Fetch institution
+        Institution institution = institutionRepository.findByInstituteName(request.getInstituteName())
+                .orElseThrow(() -> new RuntimeException("Institution not found"));
+
+        // Step 3: Save counsellor details
+        CounsellorDetails counsellorDetails = new CounsellorDetails();
+        counsellorDetails.setUserId(user);
+        counsellorDetails.setInstitutionId(institution);
+        counsellorDetails.setSpecialization(request.getSpecialization());
+        counsellorDetails.setBio(request.getBio());
+
+        counsellorRepository.save(counsellorDetails);
+
+        return ResponseEntity.ok(ApiResponse.success("Counsellor created successfully"));
     }
 
-    public ResponseEntity<?> createCounsellor(UserCreateRequest request) throws UsernameAlreadyExistsException {
-        return createUserFromDTO(request, Role.COUNSELOR);
-    }
-
-    private ResponseEntity<?> createUserFromDTO(UserCreateRequest request, Role role) throws UsernameAlreadyExistsException {
-        if (userRepository.existsByUsername(request.getUsername())) {
-            throw new UsernameAlreadyExistsException("Username " + request.getUsername() + " is already taken");
-        }
-
+    /** Common user creation logic */
+    private User createUser(UserCreateRequest request, Role role) throws UsernameAlreadyExistsException {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new ApiException("Email " + request.getEmail() + " is already taken");
         }
 
         User user = new User();
-        user.setRole(role);
         user.setUsername(request.getUsername());
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
         user.setEmail(request.getEmail());
         user.setMobileNumber(request.getMobileNumber());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setRole(role);
 
-        String[] nameParts = request.getFullName().trim().split("\\s+", 2);
-        user.setFirstName(nameParts[0]);
-        user.setLastName(nameParts.length > 1 ? nameParts[1] : "");
-
-        userRepository.save(user); // Save the user first so the ID is generated
-
-        if (role == Role.INSTITUTE_ADMIN) {
-            InstituteAdminDetails instituteAdminDetails = new InstituteAdminDetails();
-            instituteAdminDetails.setUser(user);
-            instituteAdminDetails.setInstitute(request.getInstitute());
-            adminRepository.save(instituteAdminDetails);
-        } else if (role == Role.COUNSELOR) {
-            CounsellorDetails counsellorDetails = new CounsellorDetails();
-            counsellorDetails.setUser(user);
-            counsellorDetails.setInstitute(request.getInstitute());
-            counsellorDetails.setExpertiseArea(request.getExpertiseArea());
-            counsellorRepository.save(counsellorDetails);
-        }
-
-        return ResponseEntity.ok(ApiResponse.success("User created successfully"));
+        return userRepository.save(user);
     }
 }
+

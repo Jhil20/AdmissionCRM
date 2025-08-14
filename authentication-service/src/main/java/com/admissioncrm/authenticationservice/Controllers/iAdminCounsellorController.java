@@ -1,6 +1,8 @@
 package com.admissioncrm.authenticationservice.Controllers;
 
 
+import com.admissioncrm.authenticationservice.DTO.iAdminCounsellorCreation.CreateCounsellorRequest;
+import com.admissioncrm.authenticationservice.DTO.iAdminCounsellorCreation.CreateInstituteAdminRequest;
 import com.admissioncrm.authenticationservice.DTO.iAdminCounsellorCreation.UserCreateRequest;
 import com.admissioncrm.authenticationservice.ExceptionHandling.UsernameAlreadyExistsException.UsernameAlreadyExistsException;
 import com.admissioncrm.authenticationservice.Repositories.UserRepository;
@@ -22,7 +24,7 @@ public class iAdminCounsellorController {
 
     @PreAuthorize("hasRole('UNIVERSITY_ADMIN')")
     @PostMapping("/ia/create")
-    public ResponseEntity<?> createInstitueAdmin (@RequestBody UserCreateRequest request) throws UsernameAlreadyExistsException {
+    public ResponseEntity<?> createInstitueAdmin (@RequestBody CreateInstituteAdminRequest  request) throws UsernameAlreadyExistsException {
 
         return ResponseEntity.ok(adminCounsellorService.createInstituteAdmin(request));
 
@@ -31,7 +33,7 @@ public class iAdminCounsellorController {
 
     @PreAuthorize("hasAnyRole('UNIVERSITY_ADMIN', 'INSTITUTE_ADMIN')")
     @PostMapping("/c/create")
-    public ResponseEntity<?> createCounsellor(@RequestBody UserCreateRequest request) throws UsernameAlreadyExistsException {
+    public ResponseEntity<?> createCounsellor(@RequestBody CreateCounsellorRequest  request) throws UsernameAlreadyExistsException {
         return ResponseEntity.ok(adminCounsellorService.createCounsellor(request));
     }
 }
