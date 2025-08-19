@@ -25,5 +25,9 @@ public class ErrorResponse {
         this.messages = messages;
     }
 
-
+    public ErrorResponse(LocalDateTime timestamp, int status, String error) {
+        this.timestamp = timestamp;
+        this.status = status;
+        this.error = error;
+    }
 }
