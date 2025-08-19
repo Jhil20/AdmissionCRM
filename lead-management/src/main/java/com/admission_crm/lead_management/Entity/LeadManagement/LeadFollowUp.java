@@ -24,6 +24,9 @@ public class LeadFollowUp {
     @Enumerated(EnumType.STRING)
     private FollowUpType followUpType;
 
+    @Column(columnDefinition = "TEXT")
+    private String followUpReply;
+
     private LocalDateTime followUpDate;
 
     @CreationTimestamp
