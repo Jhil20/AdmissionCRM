@@ -7,7 +7,7 @@ import RoleSelectionModal from './RoleSelectionModal';
 import Sidebar from '../SideBar';
 import Header from '../Header';
 
-const API_BASE_URL = "http://localhost:8000/api/university-admin/getAlliAdminCounsellor";
+const API_BASE_URL = "http://localhost:8000/api/auth/admin/getAlliAdminCounsellor";
 
 const UserDashboard = () => {
   const [selectedRole, setSelectedRole] = useState('All Roles');
