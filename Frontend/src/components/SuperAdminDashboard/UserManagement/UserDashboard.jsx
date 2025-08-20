@@ -65,11 +65,15 @@ const UserDashboard = () => {
         name: u.firstName,
         email: u.email,
         role: u.role === 'INSTITUTE_ADMIN' ? 'Institutional Admin' : 'Counsellor',
-        institute: u.instituteName,
+        institute: u.instituteName || u.counsellorInstitute,
         contact: u.mobileNumber,
-        status: u.isactive ? 'Active' : 'Inactive',
+        status: u.active ? 'Active' : 'Inactive',
         avatar: u.firstName ? u.firstName.slice(0, 2).toUpperCase() : '',
-        avatarBg: 'bg-green-500'
+        avatarBg: 'bg-green-500',
+        specialization: u.specialization || 'N/A',
+        designation: u.designation || 'N/A',
+        alternateEmail: u.alternateEmail || 'N/A',
+        bio: u.bio || 'N/A',
       }));
 
       setUsers(mappedUsers);
@@ -80,10 +84,13 @@ const UserDashboard = () => {
   };
 
   const filteredUsers = users.filter(user =>
-    (selectedRole === 'All Roles' || user.role === selectedRole) &&
-    (user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-     user.email.toLowerCase().includes(searchTerm.toLowerCase()))
+      (selectedRole === 'All Roles' || user.role === selectedRole) &&
+      (
+          (user.firstName?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+          (user.email?.toLowerCase() || '').includes(searchTerm.toLowerCase())
+      )
   );
+
 
   const handleAddUserClick = () => {
     setIsModalOpen(true);

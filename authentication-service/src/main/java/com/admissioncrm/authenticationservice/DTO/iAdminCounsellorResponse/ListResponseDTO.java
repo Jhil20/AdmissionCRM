@@ -7,25 +7,33 @@ import lombok.NoArgsConstructor;
 
 
 
-@Data
-@AllArgsConstructor  // generates the constructor matching JPQL
+@Data // generates the constructor matching JPQL
 @NoArgsConstructor
 public class ListResponseDTO {
     private String firstName;
     private String email;
-    private Role role;
-    private String instituteName;
     private String mobileNumber;
-    private Boolean isactive;
+    private Boolean isActive;
+    private Role role;
+    private String specialization;
+    private String bio;
+    private String instituteName;
+    private String designation;
+    private String alternateEmail;
+    private String InstituteAdminInstitute;
 
-    public ListResponseDTO(String firstName, String email, String mobileNumber,
-                           Boolean active, Role role, String instituteName) {
+    public ListResponseDTO(String firstName, String email, String mobileNumber, Boolean isActive, Role role, String specialization, String bio, String instituteName, String designation, String alternateEmail, String InstituteAdminInstitute) {
         this.firstName = firstName;
         this.email = email;
         this.mobileNumber = mobileNumber;
-        this.isactive = active;
+        this.isActive = isActive;
         this.role = role;
+        this.specialization = specialization;
+        this.bio = bio;
         this.instituteName = instituteName;
+        this.designation = designation;
+        this.alternateEmail = alternateEmail;
+        this.InstituteAdminInstitute = InstituteAdminInstitute;
     }
 
     public String getFirstName() {
@@ -44,6 +52,22 @@ public class ListResponseDTO {
         this.email = email;
     }
 
+    public String getMobileNumber() {
+        return mobileNumber;
+    }
+
+    public void setMobileNumber(String mobileNumber) {
+        this.mobileNumber = mobileNumber;
+    }
+
+    public Boolean getActive() {
+        return isActive;
+    }
+
+    public void setActive(Boolean active) {
+        isActive = active;
+    }
+
     public Role getRole() {
         return role;
     }
@@ -52,12 +76,20 @@ public class ListResponseDTO {
         this.role = role;
     }
 
-    public Boolean getIsactive() {
-        return isactive;
+    public String getSpecialization() {
+        return specialization;
     }
 
-    public void setIsactive(Boolean isactive) {
-        this.isactive = isactive;
+    public void setSpecialization(String specialization) {
+        this.specialization = specialization;
+    }
+
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
     }
 
     public String getInstituteName() {
@@ -68,13 +100,27 @@ public class ListResponseDTO {
         this.instituteName = instituteName;
     }
 
-    public String getMobileNumber() {
-        return mobileNumber;
+    public String getDesignation() {
+        return designation;
     }
 
-    public void setMobileNumber(String mobileNumber) {
-        this.mobileNumber = mobileNumber;
+    public void setDesignation(String designation) {
+        this.designation = designation;
     }
 
+    public String getAlternateEmail() {
+        return alternateEmail;
+    }
 
+    public void setAlternateEmail(String alternateEmail) {
+        this.alternateEmail = alternateEmail;
+    }
+
+    public String getCounsellorInstitute() {
+        return InstituteAdminInstitute;
+    }
+
+    public void setCounsellorInstitute(String InstituteAdminInstitute) {
+        this.InstituteAdminInstitute = InstituteAdminInstitute;
+    }
 }

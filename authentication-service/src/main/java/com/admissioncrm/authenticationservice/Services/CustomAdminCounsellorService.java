@@ -29,7 +29,7 @@ public class CustomAdminCounsellorService {
         if (roleStr != null && !roleStr.equalsIgnoreCase("ALL")) {
             role = Role.valueOf(roleStr.toUpperCase());
         }
-        return userRepository.findAllByRole(role, PageRequest.of(page, size));
+        return userRepository.findCounsellorsAndAdminsRaw(PageRequest.of(page, size));
     }
 
 

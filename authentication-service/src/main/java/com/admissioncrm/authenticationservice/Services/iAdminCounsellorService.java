@@ -67,7 +67,7 @@ public ResponseEntity<?> createInstituteAdmin(CreateInstituteAdminRequest reques
             throws UsernameAlreadyExistsException {
 
         // Step 1: Create User (common)
-        User user = createUser(request, Role.COUNSELOR);
+        User user = createUser(request, Role.COUNSELLOR);
 
         // Step 2: Fetch institution
         Institution institution = institutionRepository.findByInstituteName(request.getInstituteName())

@@ -41,23 +41,27 @@ public interface UserRepository extends JpaRepository<User, String> {
 //    Page<User> findAllByRoleWithDetails(@Param("role") Role role, Pageable pageable);
 
     @Query("""
-SELECT new com.admissioncrm.authenticationservice.DTO.iAdminCounsellorResponse.ListResponseDTO(
+SELECT
     u.firstName,
     u.email,
     u.mobileNumber,
     u.isActive,
     u.role,
-    COALESCE(inst1.instituteName, inst2.instituteName)
-)
+    cd.specialization,
+    cd.bio,
+    inst1.instituteName,
+    iad.designation,
+    iad.alternateEmail,
+    inst2.instituteName
 FROM User u
 LEFT JOIN CounsellorDetails cd ON cd.userId = u
 LEFT JOIN cd.institutionId inst1
 LEFT JOIN InstituteAdminDetails iad ON iad.user = u
 LEFT JOIN iad.institutionId inst2
-WHERE u.role <> com.admissioncrm.authenticationservice.Entities.CoreEntities.Role.UNIVERSITY_ADMIN
-  AND (:role IS NULL OR u.role = :role)
+WHERE u.role IN (
+    com.admissioncrm.authenticationservice.Entities.CoreEntities.Role.COUNSELLOR,
+    com.admissioncrm.authenticationservice.Entities.CoreEntities.Role.INSTITUTE_ADMIN
+)
 """)
-    Page<ListResponseDTO> findAllByRole(@Param("role") Role role, Pageable pageable);
-
-
+    Page<ListResponseDTO> findCounsellorsAndAdminsRaw(Pageable pageable);
 }

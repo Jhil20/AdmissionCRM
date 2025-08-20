@@ -70,7 +70,7 @@ const UserDetailOverlay = ({ user, onClose }) => {
                   <div className="space-y-4">
                     <InfoRow icon={<Award className="w-5 h-5" />} label="Designation" value={user.designation || 'Principal'} />
                     <InfoRow icon={<Mail className="w-5 h-5" />} label="Alternate Email" value={user.alternateEmail || `${user.name.toLowerCase()}.admin@${user.institute.toLowerCase()}.edu`} />
-                    <InfoRow icon={<Building className="w-5 h-5" />} label="Institute Name" value={user.instituteName || 'Charotar University of Science and Technology'} />
+                    <InfoRow icon={<Building className="w-5 h-5" />} label="Institute Name" value={user.institute || 'Charotar University of Science and Technology'} />
                   </div>
                 </>
               ) : (
