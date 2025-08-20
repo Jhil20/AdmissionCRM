@@ -4,8 +4,8 @@ import UserFilter from './UserFilter';
 import UserList from './UserList';
 import AddUserForm from './AddUserForm';
 import RoleSelectionModal from './RoleSelectionModal';
-import Sidebar from '../../SideBar';
-import Header from '../../Header';
+import Sidebar from '../SideBar';
+import Header from '../Header';
 
 const API_BASE_URL = "http://localhost:8000/api/university-admin/getAlliAdminCounsellor";
 

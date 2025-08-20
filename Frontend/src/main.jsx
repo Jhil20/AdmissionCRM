@@ -8,6 +8,8 @@ import { createBrowserRouter, RouterProvider } from 'react-router'
 import { Login,Home, Signup } from './components/index.js'
 import SuperAdminDashboard from './components/SuperAdminDashboard/AnalyticsDashboard/SuperAdminDashboard.jsx';
 import UserManagementDashboard from './components/SuperAdminDashboard/UserManagement/UserDashboard.jsx';
+import InstituteAdminDashboard from './components/InstituteAdminDashboard/AnalyticsDashboard/InstituteAdminDashboard.jsx';
+import CounsellorDashboard from './components/InstituteAdminDashboard/CounsellorManagement/CounsellorDashboard.jsx';
 
 const router = createBrowserRouter([
   {
@@ -29,7 +31,15 @@ const router = createBrowserRouter([
   {
     path: 'superadmin/user-management',
     element: <UserManagementDashboard />
-  }
+  },
+  {
+    path: 'instituteadmin/dashboard',
+    element: <InstituteAdminDashboard />
+  },
+  {
+    path: 'instituteadmin/counsellor-management',
+    element: <CounsellorDashboard />
+  },
 ])
 
 createRoot(document.getElementById('root')).render(
