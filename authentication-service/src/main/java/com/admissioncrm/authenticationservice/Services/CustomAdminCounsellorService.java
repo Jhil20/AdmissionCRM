@@ -1,17 +1,14 @@
 package com.admissioncrm.authenticationservice.Services;
 
-import com.admissioncrm.authenticationservice.DTO.iAdminCounsellorResponse.CounsellorResponseDTO;
-import com.admissioncrm.authenticationservice.DTO.iAdminCounsellorResponse.InstituteAdminResponseDTO;
+import com.admissioncrm.authenticationservice.DTO.iAdminCounsellorResponse.ListResponseDTO;
 import com.admissioncrm.authenticationservice.Entities.CoreEntities.Role;
 import com.admissioncrm.authenticationservice.Repositories.CounsellorRepository;
 import com.admissioncrm.authenticationservice.Repositories.InstituteAdminRepository;
 import com.admissioncrm.authenticationservice.Repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class CustomAdminCounsellorService {
@@ -27,35 +24,16 @@ public class CustomAdminCounsellorService {
         this.instituteAdminRepository = instituteAdminRepository;
     }
 
-
-
-    public List<InstituteAdminResponseDTO> getAllInstituteAdmins() {
-        return userRepository.findByRole(Role.INSTITUTE_ADMIN).stream()
-                .map(user -> {
-                    return new InstituteAdminResponseDTO(
-                            user.getEmail(),
-                            user.getActive(),
-                            user.getMobileNumber(),
-                            user.getRole().name(),
-                            user.getUsername(),
-                            user.getInstituteAdminDetails().getInstitute() // Direct enum to string
-                    );
-                }).collect(Collectors.toList());
+    public Page<ListResponseDTO> getUsersByRole(String roleStr, int page, int size) {
+        Role role = null;
+        if (roleStr != null && !roleStr.equalsIgnoreCase("ALL")) {
+            role = Role.valueOf(roleStr.toUpperCase());
+        }
+        return userRepository.findCounsellorsAndAdminsRaw(PageRequest.of(page, size));
     }
 
-    public List<CounsellorResponseDTO> getAllCounsellors() {
-        return userRepository.findByRole(Role.COUNSELOR).stream()
-                .map(user -> {
-                    return new CounsellorResponseDTO(
-                            user.getEmail(),
-                            user.getActive(),
-                            user.getMobileNumber(),
-                            user.getRole().name(),
-                            user.getUsername(),
-                            user.getCounsellorDetails().getExpertiseArea(),
-                            user.getCounsellorDetails().getInstitute() // Assume always filled
-                    );
-                }).collect(Collectors.toList());
-    }
+
+
+
 }
 

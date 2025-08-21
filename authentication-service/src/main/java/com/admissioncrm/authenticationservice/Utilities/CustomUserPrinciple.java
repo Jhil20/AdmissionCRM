@@ -7,26 +7,18 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 @Data
 public class CustomUserPrinciple implements UserDetails {
 
-    private String userId;
-    private String username;
-    private Collection<? extends GrantedAuthority> authorities;
     private User user;
+    private String userId;
 
-    public CustomUserPrinciple(User user)
+    public CustomUserPrinciple(User user,String userId)
     {
         this.user = user;
-    }
-
-    public CustomUserPrinciple(String userId, String username,List<? extends GrantedAuthority> authorities) {
         this.userId = userId;
-        this.username = username;
-        this.authorities = authorities;
     }
 
 
@@ -50,5 +42,13 @@ public class CustomUserPrinciple implements UserDetails {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }

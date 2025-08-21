@@ -1,5 +1,6 @@
 package com.admissioncrm.authenticationservice.Config;
 
+import com.admissioncrm.authenticationservice.Entities.CoreEntities.User;
 import com.admissioncrm.authenticationservice.Services.CustomUserDetailsService;
 import com.admissioncrm.authenticationservice.Utilities.CustomUserPrinciple;
 import com.admissioncrm.authenticationservice.Utilities.JwtUtils;
@@ -11,6 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -37,6 +39,8 @@ public class JwtFilter extends OncePerRequestFilter {
     }
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+
+
         String authHeader =request.getHeader("Authorization");
         String token=null;
         String username=null;
@@ -53,16 +57,18 @@ public class JwtFilter extends OncePerRequestFilter {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
             if (jwtUtils.validateToken(token, userDetails)) {
                 Claims claims = jwtUtils.extractAllClaims(token);
-                String userId = jwtUtils.extractUserIdFromToken(token);
+                String userId = jwtUtils.extractUserIdFromToken(token); //if you want to use this userId then in controller use HttpServletRequest req as parametere
                 String role = claims.get("role", String.class);
+
 
                 List<SimpleGrantedAuthority> authorities=new ArrayList<>() ;
                 authorities.add(new SimpleGrantedAuthority("ROLE_"+role));
-                CustomUserPrinciple principle = new CustomUserPrinciple(username,userId,authorities);
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(principle, null, principle.getAuthorities());
+
+                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authToken.setDetails(new WebAuthenticationDetailsSource()
                         .buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
+                request.setAttribute("userId",userId);
             }
         }
         filterChain.doFilter(request, response);
