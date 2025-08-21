@@ -51,7 +51,7 @@ public class AuthenticationService {
 
         //generate the token
         try{
-            String jwtToken = jwtUtils.generateToken(user.getUsername(), user.getRole());
+            String jwtToken = jwtUtils.generateToken(user.getUsername(), user.getRole(), user.getId());
             return ResponseEntity.ok(new JwtResponse(jwtToken, user.getRole()));
         }catch(Exception e)
         {
@@ -66,32 +66,32 @@ public class AuthenticationService {
     @Transactional
     public JwtResponse registerStudent(StudentRegistrationRequest request) {
 
-            if (userRepository.existsByMobileNumber(request.getMobileNumber())) {
-                throw new ApiException("Mobile number already registered");
-            }
-            if(userRepository.existsByEmail(request.getEmail()))
-            {
-                throw new ApiException("Email already registered");
-            }
-            User user = new User();
-            user.setUsername(request.getUsername());
-            user.setMobileNumber(request.getMobileNumber());
-            user.setFirstName(request.getFirstName());
-            user.setLastName(request.getLastName());
-            user.setEmail(request.getEmail());
-            user.setPassword(passwordEncoder.encode(request.getPassword()));
-            user.setRole(Role.STUDENT);
+        if (userRepository.existsByMobileNumber(request.getMobileNumber())) {
+            throw new ApiException("Mobile number already registered");
+        }
+        if(userRepository.existsByEmail(request.getEmail()))
+        {
+            throw new ApiException("Email already registered");
+        }
+        User user = new User();
+        user.setUsername(request.getUsername());
+        user.setMobileNumber(request.getMobileNumber());
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
+        user.setEmail(request.getEmail());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setRole(Role.STUDENT);
 
-            userRepository.save(user);
-            //Also add save the Student Details Entity in future for more user specific details
+        user = userRepository.save(user);
+        //Also add save the Student Details Entity in future for more user specific details
 
 
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(request.getMobileNumber(), request.getPassword())
-            );
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.getMobileNumber(), request.getPassword())
+        );
 
-            String jwtToken = jwtUtils.generateToken(user.getUsername(), Role.STUDENT);
-            return new JwtResponse(jwtToken, Role.STUDENT);
+        String jwtToken = jwtUtils.generateToken(user.getUsername(), Role.STUDENT, user.getId());
+        return new JwtResponse(jwtToken, Role.STUDENT);
 
 
     }

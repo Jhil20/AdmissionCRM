@@ -1,6 +1,8 @@
 package com.admissioncrm.authenticationservice.Config;
 
+import com.admissioncrm.authenticationservice.Entities.CoreEntities.User;
 import com.admissioncrm.authenticationservice.Services.CustomUserDetailsService;
+import com.admissioncrm.authenticationservice.Utilities.CustomUserPrinciple;
 import com.admissioncrm.authenticationservice.Utilities.JwtUtils;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
@@ -54,11 +56,8 @@ public class JwtFilter extends OncePerRequestFilter {
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
             if (jwtUtils.validateToken(token, userDetails)) {
-
                 Claims claims = jwtUtils.extractAllClaims(token);
-//                String username = claims.getSubject();
-
-                // Assuming roles are stored as a List<String> claim called "roles"
+                String userId = jwtUtils.extractUserIdFromToken(token); //if you want to use this userId then in controller use HttpServletRequest req as parametere
                 String role = claims.get("role", String.class);
 
 
@@ -69,6 +68,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 authToken.setDetails(new WebAuthenticationDetailsSource()
                         .buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
+                request.setAttribute("userId",userId);
             }
         }
         filterChain.doFilter(request, response);

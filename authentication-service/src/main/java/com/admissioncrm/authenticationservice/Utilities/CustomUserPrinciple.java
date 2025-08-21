@@ -1,4 +1,4 @@
-package com.admissioncrm.authenticationservice.Entities;
+package com.admissioncrm.authenticationservice.Utilities;
 
 import com.admissioncrm.authenticationservice.Entities.CoreEntities.User;
 import lombok.Data;
@@ -10,13 +10,17 @@ import java.util.Collection;
 import java.util.List;
 
 @Data
-public class UserPrinciple implements UserDetails {
-
-    public UserPrinciple(User user) {
-        this.user = user;
-    }
+public class CustomUserPrinciple implements UserDetails {
 
     private User user;
+    private String userId;
+
+    public CustomUserPrinciple(User user,String userId)
+    {
+        this.user = user;
+        this.userId = userId;
+    }
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -38,5 +42,13 @@ public class UserPrinciple implements UserDetails {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }
