@@ -10,6 +10,7 @@ import SuperAdminDashboard from './components/SuperAdminDashboard/AnalyticsDashb
 import UserManagementDashboard from './components/SuperAdminDashboard/UserManagement/UserDashboard.jsx';
 import InstituteAdminDashboard from './components/InstituteAdminDashboard/AnalyticsDashboard/InstituteAdminDashboard.jsx';
 import CounsellorDashboard from './components/InstituteAdminDashboard/CounsellorManagement/CounsellorDashboard.jsx';
+import LeadDashboard from './components/InstituteAdminDashboard/LeadManagement/LeadDashboard.jsx'
 
 const router = createBrowserRouter([
   {
@@ -39,6 +40,10 @@ const router = createBrowserRouter([
   {
     path: 'instituteadmin/counsellor-management',
     element: <CounsellorDashboard />
+  },
+  {
+    path: 'instituteadmin/lead-management',
+    element: <LeadDashboard />
   },
 ])
 

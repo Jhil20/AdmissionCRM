@@ -15,6 +15,7 @@ const Sidebar = () => {
   const menuItems = [
     { id: 'analytics', icon: BarChart3, label: 'Analytics Dashboard', route: '/instituteadmin/dashboard' },
     { id: 'users', icon: Users, label: 'Counsellor Management', route: '/instituteadmin/counsellor-management' },
+    { id: 'leads', icon: Users, label: 'Lead Management', route: '/instituteadmin/lead-management' },
   ];
 
   return (
