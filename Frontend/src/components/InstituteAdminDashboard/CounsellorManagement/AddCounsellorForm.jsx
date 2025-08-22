@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 const AddCounsellorForm = ({ selectedRole, onCancel, onSubmit }) => {
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -15,6 +16,7 @@ const AddCounsellorForm = ({ selectedRole, onCancel, onSubmit }) => {
     bio: ''
   });
 
+  
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -23,13 +25,15 @@ const AddCounsellorForm = ({ selectedRole, onCancel, onSubmit }) => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSubmit(formData);
+    setLoading(true);
+    await onSubmit(formData);
+    setLoading(false);
   };
 
-  const isInstituteAdmin = selectedRole === 'INSTITUTE_ADMIN';
-  const isCounselor = selectedRole === 'COUNSELOR';
+  
+  const isCounselor = selectedRole === 'COUNSELLOR';
 
   return (
     <div className="bg-white rounded-lg shadow p-6">

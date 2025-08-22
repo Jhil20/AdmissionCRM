@@ -1,13 +1,16 @@
 package com.admissioncrm.authenticationservice.Services;
 
+import com.admissioncrm.authenticationservice.DTO.iAdminCounsellorResponse.CounsellorResponseDTO;
 import com.admissioncrm.authenticationservice.DTO.iAdminCounsellorResponse.ListResponseDTO;
 import com.admissioncrm.authenticationservice.Entities.CoreEntities.Role;
+import com.admissioncrm.authenticationservice.Entities.InstituteAdminDetails;
 import com.admissioncrm.authenticationservice.Repositories.CounsellorRepository;
 import com.admissioncrm.authenticationservice.Repositories.InstituteAdminRepository;
 import com.admissioncrm.authenticationservice.Repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -32,7 +35,18 @@ public class CustomAdminCounsellorService {
         return userRepository.findCounsellorsAndAdminsRaw(PageRequest.of(page, size));
     }
 
+    @Autowired
+    private CounsellorRepository counselorRepository;
+    public Page<CounsellorResponseDTO> getCounsellorByInstitute(String userId, Pageable pageable) {
+//        InstituteAdminDetails institute = instituteAdminRepository.findById("userId").orElseThrow(() -> new RuntimeException("Institute Admin not found"));
+//        String instituteId = institute.getId();
+        String instituteId = instituteAdminRepository.getInstituteIdByUserId(userId);
+        if (instituteId == null) {
+            throw new RuntimeException("Institute Admin not found for userId: " + userId);
+        }
+        return counselorRepository.findCounsellorByInstituteId(instituteId,pageable);
 
+    }
 
 
 }

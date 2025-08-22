@@ -38,7 +38,7 @@ export default function Login() {
       if (data.role === 'UNIVERSITY_ADMIN') {
         navigate('/superadmin/dashboard');
       } else if (data.role === 'INSTITUTE_ADMIN') {
-        navigate('/admin/dashboard');
+        navigate('/instituteadmin/dashboard');
       } else if (data.role === 'counsellor') {
         navigate('/counsellor/COUNSELLOR');
       } else {

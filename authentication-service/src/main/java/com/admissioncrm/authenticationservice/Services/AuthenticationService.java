@@ -100,7 +100,6 @@ public class AuthenticationService {
 
 
     // Utility methods
-
     private User getUserByIdentifier(String identifier) {
         if (identifier.matches("^\\d{10}$")) {
             return userRepository.findByMobileNumber(identifier)

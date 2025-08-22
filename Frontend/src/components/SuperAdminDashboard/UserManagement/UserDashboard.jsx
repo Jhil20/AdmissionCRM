@@ -63,6 +63,7 @@ const UserDashboard = () => {
       const mappedUsers = data.content.map((u, idx) => ({
         id: idx,
         name: u.firstName,
+        username : u.username,
         email: u.email,
         role: u.role === 'INSTITUTE_ADMIN' ? 'Institutional Admin' : 'Counsellor',
         institute: u.instituteName || u.counsellorInstitute,
@@ -108,17 +109,7 @@ const UserDashboard = () => {
   };
 
   const handleFormSubmit = async (formData) => {
-    // try {
-    //   // Add your API call to create user here
-    //   console.log('Form submitted:', formData);
-      
-    //   // Close form and refresh users list
-    //   setIsFormOpen(false);
-    //   setRoleForNewUser('');
-    //   await fetchUsers(); // Refresh the users list
-    // } catch (error) {
-    //   console.error('Error creating user:', error);
-    // }
+  
      try {
     const token = localStorage.getItem('Token');
     if (!token) {

@@ -28,15 +28,12 @@ import java.util.List;
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
-
+    @Autowired
     JwtUtils jwtUtils;
+    @Autowired
     CustomUserDetailsService userDetailsService;
     //constructor injection
-    JwtFilter(JwtUtils jwtUtils, CustomUserDetailsService userDetailsService){
-        this.jwtUtils = jwtUtils;
-        this.userDetailsService = userDetailsService;
 
-    }
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
