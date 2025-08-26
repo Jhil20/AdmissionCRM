@@ -3,6 +3,7 @@ package com.admissioncrm.authenticationservice.DTO.iAdminCounsellorResponse;
 import com.admissioncrm.authenticationservice.Entities.CoreEntities.Role;
 
 public class CounsellorResponseDTO {
+    private String id;
     private String userName;
     private String firstName;
     private String lastName;
@@ -14,7 +15,8 @@ public class CounsellorResponseDTO {
     private String bio;
     private String instituteName;
 
-    public CounsellorResponseDTO(String userName, String firstName, String lastName, String email, String mobileNumber, Boolean isActive, Role role, String specialization, String bio, String instituteName) {
+    public CounsellorResponseDTO(String id,String userName, String firstName, String lastName, String email, String mobileNumber, Boolean isActive, Role role, String specialization, String bio, String instituteName) {
+        this.id = id;
         this.userName = userName;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -25,6 +27,14 @@ public class CounsellorResponseDTO {
         this.specialization = specialization;
         this.bio = bio;
         this.instituteName = instituteName;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getUserName() {

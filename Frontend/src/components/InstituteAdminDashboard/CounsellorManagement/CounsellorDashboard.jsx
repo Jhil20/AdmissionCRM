@@ -34,11 +34,12 @@ const CounsellorDashboard = () => {
       if (!res.ok) throw new Error(`Error: ${res.status}`);
 
       const data = await res.json();
+      console.log("Fetched counsellors:", data);
 
       const mapped = data.content.map((u, idx) => ({
-        id: idx,
+        id: u.id,
         name: u.firstName,
-        username: u.username,
+        username: u.userName,
         email: u.email,
         role: "COUNSELLOR",
         institute: u.instituteName || u.counsellorInstitute,
@@ -79,6 +80,46 @@ const CounsellorDashboard = () => {
     return matchesSearch && matchesStatus;
   });
 
+  const handleDeleteClick = async (userId) => {
+    try {
+      const token = localStorage.getItem('Token');
+      if (!token) {
+        console.error("No auth token found in localStorage");
+        return;
+      }
+
+      const userToDelete = counsellors.find(user => user.id === userId);
+      console.log("User to delete:", userToDelete);
+      if (!userToDelete) {
+        console.error("User not found");
+        return;
+      }
+
+      // ✅ Single delete endpoint
+      const deleteEndpoint = `http://localhost:8000/api/auth/admin/delete/${userToDelete.id}`;
+
+      const res = await fetch(deleteEndpoint, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(`Failed to delete user: ${res.status} - ${errorText}`);
+      }
+
+      // ✅ Update UI
+      setCounsellors(prev => prev.filter(u => u.id !== userId));
+      console.log(`${userToDelete.role} deleted successfully`);
+
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    }
+  };
+
 
   const handleAddClick = () => setIsFormOpen(true);
   const handleFormCancel = () => setIsFormOpen(false);
@@ -105,26 +146,6 @@ const CounsellorDashboard = () => {
       await fetchCounsellors();
       setIsFormOpen(false);
 
-      // Map new counsellor to same structure
-      // const newCounsellor = {
-      //   id: counsellors.length + 1,
-      //   name: data.firstName,
-      //   username: data.username,
-      //   email: data.email,
-      //   role: "COUNSELLOR",
-      //   institute: data.instituteName || data.counsellorInstitute,
-      //   contact: data.mobileNumber,
-      //   status: data.active ? "Active" : "Inactive",
-      //   avatar: data.firstName ? data.firstName.slice(0, 2).toUpperCase() : "",
-      //   avatarBg: "bg-green-500",
-      //   specialization: data.specialization || "N/A",
-      //   designation: data.designation || "N/A",
-      //   alternateEmail: data.alternateEmail || "N/A",
-      //   bio: data.bio || "N/A",
-      // };
-
-      // setCounsellors((prev) => [...prev, newCounsellor]);
-      // setIsFormOpen(false);
     } catch (err) {
       console.error(err);
       alert("Error creating counsellor. Please try again.");
@@ -159,7 +180,9 @@ const CounsellorDashboard = () => {
               {loading ? (
                 <p className="text-gray-500">Loading counsellors...</p>
               ) : (
-                <CounsellorList filteredUsers={filteredCounsellors} />
+                <CounsellorList filteredUsers={filteredCounsellors} 
+                onDeleteUser={handleDeleteClick}
+                />
               )}
             </>
           )}

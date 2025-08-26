@@ -42,6 +42,7 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     @Query("""
 SELECT
+    u.id,
     u.firstName,
     u.username,
     u.email,

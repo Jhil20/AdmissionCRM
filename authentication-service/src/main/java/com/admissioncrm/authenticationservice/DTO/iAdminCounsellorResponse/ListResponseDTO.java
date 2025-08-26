@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @Data // generates the constructor matching JPQL
 @NoArgsConstructor
 public class ListResponseDTO {
+    private  String id;
     private String firstName;
     private String username;
     private String email;
@@ -23,7 +24,8 @@ public class ListResponseDTO {
     private String alternateEmail;
     private String InstituteAdminInstitute;
 
-    public ListResponseDTO(String firstName, String username ,String email, String mobileNumber, Boolean isActive, Role role, String specialization, String bio, String instituteName, String designation, String alternateEmail, String InstituteAdminInstitute ) {
+    public ListResponseDTO(String id, String firstName, String username ,String email, String mobileNumber, Boolean isActive, Role role, String specialization, String bio, String instituteName, String designation, String alternateEmail, String InstituteAdminInstitute ) {
+        this.id = id;
         this.firstName = firstName;
         this.username = username;
         this.email = email;
@@ -37,6 +39,14 @@ public class ListResponseDTO {
         this.alternateEmail = alternateEmail;
         this.InstituteAdminInstitute = InstituteAdminInstitute;
 
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getFirstName() {

@@ -2,9 +2,35 @@ import React from "react";
 import { Eye, Edit, Trash2 } from "lucide-react";
 import { useState } from "react";
 import CounsellorDetailOverlay from "./CounsellorDetailOverlay";
+import DeleteOverlay from "./DeleteOverlay"
 
-const CounsellorTable = ({ filteredUsers = [] }) => {
+const CounsellorTable = ({ filteredUsers = [], onDeleteUser }) => {
   const [selectedCounsellor, setSelectedCounsellor] = useState(null);
+  const [userToDelete, setUserToDelete] = useState(null);
+
+
+  const handleDeleteClick = (user) => {
+    setUserToDelete(user);
+  };
+
+  const handleCloseDelete = () => {
+    setUserToDelete(null);
+  }
+
+  const handleConfirmDelete = async (userId) => {
+    if (userToDelete && onDeleteUser) {
+      try {
+        // Call the delete API or function here
+        if (onDeleteUser) {
+          await onDeleteUser(userId);
+        }
+        setUserToDelete(null);
+      } catch (error) {
+        console.error('Error deleting user:', error);
+      }
+    }
+  };
+
 
   return (
     <div className="bg-white rounded-lg shadow overflow-hidden">
@@ -22,7 +48,7 @@ const CounsellorTable = ({ filteredUsers = [] }) => {
         <tbody className="bg-white divide-y divide-gray-200">
           {filteredUsers.length > 0 ? (
             filteredUsers.map((user, idx) => (
-              <tr key={idx} className="hover:bg-gray-50">
+              <tr key={user.id} className="hover:bg-gray-50">
                 {/* Name + Email */}
                 <td className="px-6 py-4">
                   <div className="flex items-center">
@@ -72,7 +98,9 @@ const CounsellorTable = ({ filteredUsers = [] }) => {
                     <button className="text-blue-600 hover:text-blue-800">
                       <Edit className="w-4 h-4" />
                     </button>
-                    <button className="text-red-600 hover:text-red-800">
+                    <button 
+                    onClick={()=>{handleDeleteClick(user)}}
+                    className="text-red-600 hover:text-red-800">
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
@@ -94,6 +122,15 @@ const CounsellorTable = ({ filteredUsers = [] }) => {
           onClose={() => setSelectedCounsellor(null)}
         />
       )}
+
+      {userToDelete && (
+        <DeleteOverlay
+          user={userToDelete}
+          onClose={handleCloseDelete}
+          onConfirm={handleConfirmDelete}
+        />
+      )}
+
     </div>
   );
 };

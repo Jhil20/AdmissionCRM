@@ -3,6 +3,7 @@ package com.admissioncrm.authenticationservice.Services;
 import com.admissioncrm.authenticationservice.DTO.iAdminCounsellorResponse.CounsellorResponseDTO;
 import com.admissioncrm.authenticationservice.DTO.iAdminCounsellorResponse.ListResponseDTO;
 import com.admissioncrm.authenticationservice.Entities.CoreEntities.Role;
+import com.admissioncrm.authenticationservice.Entities.CoreEntities.User;
 import com.admissioncrm.authenticationservice.Entities.InstituteAdminDetails;
 import com.admissioncrm.authenticationservice.Repositories.CounsellorRepository;
 import com.admissioncrm.authenticationservice.Repositories.InstituteAdminRepository;
@@ -12,6 +13,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 public class CustomAdminCounsellorService {
@@ -48,6 +52,26 @@ public class CustomAdminCounsellorService {
 
     }
 
+    @Transactional
+    public void deleteInstituteAdmin(String userId) {
+        Optional<User> existedUser = userRepository.findById(userId);
+        if (existedUser.isEmpty()) {
+            throw new RuntimeException("User not found for userId: ");
+        }
+        instituteAdminRepository.deleteByUserId(existedUser.get());
 
+        userRepository.deleteById(userId);
+    }
+
+    @Transactional
+    public void deleteCounsellor(String userId) {
+        Optional<User> existedUser = userRepository.findById(userId);
+        if (existedUser.isEmpty()) {
+            throw new RuntimeException("User not found for userId: ");
+        }
+        counsellorRepository.deleteByUserId(existedUser.get());
+
+        userRepository.deleteById(userId);
+    }
 }
 

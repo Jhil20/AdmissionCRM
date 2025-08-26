@@ -6,6 +6,7 @@ import com.admissioncrm.authenticationservice.DTO.iAdminCounsellorCreation.Creat
 import com.admissioncrm.authenticationservice.DTO.iAdminCounsellorCreation.UserCreateRequest;
 import com.admissioncrm.authenticationservice.DTO.iAdminCounsellorResponse.CounsellorResponseDTO;
 import com.admissioncrm.authenticationservice.DTO.iAdminCounsellorResponse.ListResponseDTO;
+import com.admissioncrm.authenticationservice.Entities.CoreEntities.User;
 import com.admissioncrm.authenticationservice.ExceptionHandling.UsernameAlreadyExistsException.UsernameAlreadyExistsException;
 import com.admissioncrm.authenticationservice.Repositories.UserRepository;
 import com.admissioncrm.authenticationservice.Services.CustomAdminCounsellorService;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -29,6 +31,8 @@ public class iAdminCounsellorController {
     private iAdminCounsellorService adminCounsellorService;
     @Autowired
     CustomAdminCounsellorService customAdminCounsellorService;
+    @Autowired
+    private UserRepository userRepository;
 
     @PreAuthorize("hasRole('UNIVERSITY_ADMIN')")
     @PostMapping("/ia/create")
@@ -62,6 +66,27 @@ public class iAdminCounsellorController {
         String userId = (String) request.getAttribute("userId");
         Page<CounsellorResponseDTO> counsellors= customAdminCounsellorService.getCounsellorByInstitute(userId,pageable);
         return ResponseEntity.ok(counsellors);
+    }
 
+
+    @PreAuthorize("hasAnyRole('UNIVERSITY_ADMIN','INSTITUTE_ADMIN')")
+    @DeleteMapping("delete/{id}")
+    public ResponseEntity<?> deleteCounsellor(@PathVariable String id) {
+
+        User targetUser = userRepository.findById(id).orElseThrow(()-> new UsernameNotFoundException("User not found"));
+        String targetRole=targetUser.getRole().name();
+
+        switch (targetRole) {
+            case "INSTITUTE_ADMIN":
+                customAdminCounsellorService.deleteInstituteAdmin(id);
+                return ResponseEntity.ok("Institute admin deleted successfully");
+            case "COUNSELLOR":
+                customAdminCounsellorService.deleteCounsellor(id);
+                return ResponseEntity.ok("Counsellor deleted successfully");
+            default:
+                return ResponseEntity.badRequest()
+                        .body("Deletion not allowed for user with role: " + targetRole);
+
+        }
     }
 }
