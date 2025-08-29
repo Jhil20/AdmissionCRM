@@ -2,13 +2,21 @@ package com.admissioncrm.authenticationservice.DTO.iAdminCounsellorCreation;
 
 import com.admissioncrm.authenticationservice.Enums.Institute;
 import jakarta.persistence.Column;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
 public class UserCreateRequest {
+
+    @NotBlank(message = "Name is required")
     private String firstName;
+
     private String lastName;
+
+    @Email(message = "Invalid email format")
+    @NotBlank(message = "Email is required")
     private String email;
     private String password;
     private String mobileNumber;

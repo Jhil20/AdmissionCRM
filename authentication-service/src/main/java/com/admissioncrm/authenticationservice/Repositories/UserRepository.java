@@ -42,7 +42,9 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     @Query("""
 SELECT
+    u.id,
     u.firstName,
+    u.username,
     u.email,
     u.mobileNumber,
     u.isActive,
@@ -56,7 +58,7 @@ SELECT
 FROM User u
 LEFT JOIN CounsellorDetails cd ON cd.userId = u
 LEFT JOIN cd.institutionId inst1
-LEFT JOIN InstituteAdminDetails iad ON iad.user = u
+LEFT JOIN InstituteAdminDetails iad ON iad.userId = u
 LEFT JOIN iad.institutionId inst2
 WHERE u.role IN (
     com.admissioncrm.authenticationservice.Entities.CoreEntities.Role.COUNSELLOR,

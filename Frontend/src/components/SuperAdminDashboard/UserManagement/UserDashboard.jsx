@@ -3,6 +3,7 @@ import UserHeader from './UserHeader';
 import UserFilter from './UserFilter';
 import UserList from './UserList';
 import AddUserForm from './AddUserForm';
+import DeleteOverlay from './DeleteOverlay';
 import RoleSelectionModal from './RoleSelectionModal';
 import Sidebar from '../SideBar';
 import Header from '../Header';
@@ -64,10 +65,13 @@ const UserDashboard = () => {
       }
 
       const data = await res.json();
+      console.log(data);
+      
 
       const mappedUsers = data.content.map((u, idx) => ({
-        id: idx,
+        id: u.id,
         name: u.firstName,
+        username: u.username,
         email: u.email,
         role: u.role === 'INSTITUTE_ADMIN' ? 'Institutional Admin' : 'Counsellor',
         institute: u.instituteName || u.counsellorInstitute,
@@ -89,13 +93,52 @@ const UserDashboard = () => {
   };
 
   const filteredUsers = users.filter(user =>
-      (selectedRole === 'All Roles' || user.role === selectedRole) &&
-      (
-          (user.firstName?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
-          (user.email?.toLowerCase() || '').includes(searchTerm.toLowerCase())
-      )
+    (selectedRole === 'All Roles' || user.role === selectedRole) &&
+    (
+      (user.firstName?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+      (user.email?.toLowerCase() || '').includes(searchTerm.toLowerCase())
+    )
   );
 
+  const handleDeleteClick = async (userId) => {
+    try {
+      const token = localStorage.getItem('Token');
+      if (!token) {
+        console.error("No auth token found in localStorage");
+        return;
+      }
+
+      const userToDelete = users.find(user => user.id === userId);
+      console.log("User to delete:", userToDelete);
+      if (!userToDelete) {
+        console.error("User not found");
+        return;
+      }
+
+      // ✅ Single delete endpoint
+      const deleteEndpoint = `http://localhost:8000/api/auth/admin/delete/${userToDelete.id}`;
+
+      const res = await fetch(deleteEndpoint, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(`Failed to delete user: ${res.status} - ${errorText}`);
+      }
+
+      // ✅ Update UI
+      setUsers(prev => prev.filter(u => u.id !== userId));
+      console.log(`${userToDelete.role} deleted successfully`);
+
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    }
+  };
 
   const handleAddUserClick = () => {
     setIsModalOpen(true);
@@ -113,55 +156,45 @@ const UserDashboard = () => {
   };
 
   const handleFormSubmit = async (formData) => {
-    // try {
-    //   // Add your API call to create user here
-    //   console.log('Form submitted:', formData);
-      
-    //   // Close form and refresh users list
-    //   setIsFormOpen(false);
-    //   setRoleForNewUser('');
-    //   await fetchUsers(); // Refresh the users list
-    // } catch (error) {
-    //   console.error('Error creating user:', error);
-    // }
-     try {
-    const token = localStorage.getItem('Token');
-    if (!token) {
-      console.error("No auth token found in localStorage");
-      return;
+
+    try {
+      const token = localStorage.getItem('Token');
+      if (!token) {
+        console.error("No auth token found in localStorage");
+        return;
+      }
+
+      let endpoint = '';
+      if (roleForNewUser === 'INSTITUTE_ADMIN') {
+        endpoint = 'http://localhost:8000/api/auth/admin/ia/create';
+      } else if (roleForNewUser === 'COUNSELOR') {
+        endpoint = 'http://localhost:8000/api/auth/admin/c/create';
+      }
+
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(formData)
+      });
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(`Error ${res.status}: ${errorText}`);
+      }
+
+      const data = await res.json();
+      console.log("User created:", data);
+
+      // Close form and refresh list
+      setIsFormOpen(false);
+      setRoleForNewUser('');
+      await fetchUsers();
+    } catch (error) {
+      console.error('Error creating user:', error);
     }
-
-    let endpoint = '';
-    if (roleForNewUser === 'INSTITUTE_ADMIN') {
-      endpoint = 'http://localhost:8000/api/auth/admin/ia/create';
-    } else if (roleForNewUser === 'COUNSELOR') {
-      endpoint = 'http://localhost:8000/api/auth/admin/c/create';
-    }
-
-    const res = await fetch(endpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(formData)
-    });
-
-    if (!res.ok) {
-      const errorText = await res.text();
-      throw new Error(`Error ${res.status}: ${errorText}`);
-    }
-
-    const data = await res.json();
-    console.log("User created:", data);
-
-    // Close form and refresh list
-    setIsFormOpen(false);
-    setRoleForNewUser('');
-    await fetchUsers();
-  } catch (error) {
-    console.error('Error creating user:', error);
-  }
   };
 
   const handleModalClose = () => {
@@ -189,7 +222,9 @@ const UserDashboard = () => {
               {loading ? (
                 <div className="text-center py-10 text-gray-500">Loading...</div>
               ) : (
-                <UserList filteredUsers={filteredUsers} />
+                <UserList filteredUsers={filteredUsers}
+                          onDeleteUser={handleDeleteClick}
+                />
               )}
             </>
           ) : (

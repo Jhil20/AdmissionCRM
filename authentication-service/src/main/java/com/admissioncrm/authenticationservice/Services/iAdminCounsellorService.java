@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class iAdminCounsellorService {
@@ -38,7 +39,7 @@ public class iAdminCounsellorService {
     @Autowired
     private CounsellorRepository counsellorRepository;
 
-
+@Transactional
 public ResponseEntity<?> createInstituteAdmin(CreateInstituteAdminRequest request)
         throws UsernameAlreadyExistsException {
 
@@ -53,7 +54,7 @@ public ResponseEntity<?> createInstituteAdmin(CreateInstituteAdminRequest reques
 
     // Step 3: Save institute admin details
     InstituteAdminDetails adminDetails = new InstituteAdminDetails();
-    adminDetails.setUser(user);
+    adminDetails.setUserId(user);
     adminDetails.setInstitutionId(institution);
     adminDetails.setDesignation(request.getDesignation());
     adminDetails.setAlternateEmail(request.getAlternateEmail());
@@ -63,6 +64,7 @@ public ResponseEntity<?> createInstituteAdmin(CreateInstituteAdminRequest reques
     return ResponseEntity.ok(ApiResponse.success("Institute Admin created successfully"));
 }
 
+    @Transactional
     public ResponseEntity<?> createCounsellor(CreateCounsellorRequest request)
             throws UsernameAlreadyExistsException {
 
@@ -86,7 +88,8 @@ public ResponseEntity<?> createInstituteAdmin(CreateInstituteAdminRequest reques
     }
 
     /** Common user creation logic */
-    private User createUser(UserCreateRequest request, Role role) throws UsernameAlreadyExistsException {
+    @Transactional
+    protected User createUser(UserCreateRequest request, Role role) throws UsernameAlreadyExistsException {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new ApiException("Email " + request.getEmail() + " is already taken");
         }

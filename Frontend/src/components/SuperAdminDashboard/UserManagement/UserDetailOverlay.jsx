@@ -54,7 +54,7 @@ const UserDetailOverlay = ({ user, onClose }) => {
               <h4 className="text-lg font-semibold text-gray-800 border-b border-gray-200 pb-2">Basic Information</h4>
               <div className="space-y-4">
                 <InfoRow icon={<User className="w-5 h-5" />} label="First Name" value={user.firstName || user.name} />
-                <InfoRow icon={<User className="w-5 h-5" />} label="Last Name" value={user.lastName || ''} />
+                {/* <InfoRow icon={<User className="w-5 h-5" />} label="Last Name" value={user.lastName || ''} /> */}
                 <InfoRow icon={<Mail className="w-5 h-5" />} label="Email" value={user.email} />
                 <InfoRow icon={<Building className="w-5 h-5" />} label="Password" value="••••••••" />
                 <InfoRow icon={<Phone className="w-5 h-5" />} label="Mobile Number" value={user.contact} />

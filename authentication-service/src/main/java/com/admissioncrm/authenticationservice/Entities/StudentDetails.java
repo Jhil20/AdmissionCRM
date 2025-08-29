@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 @Entity
 public class StudentDetails {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
     @OneToOne

@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { Eye, Edit, Trash2 } from 'lucide-react';
+import DeleteOverlay from './DeleteOverlay';
 import UserDetailOverlay from './UserDetailOverlay';
 
-const UserList = ({ filteredUsers }) => {
+const UserList = ({ filteredUsers, onDeleteUser }) => {
   const [selectedUser, setSelectedUser] = useState(null);
+  const [userToDelete, setUserToDelete] = useState(null);
 
   const handleViewUser = (user) => {
     setSelectedUser(user);
@@ -11,6 +13,28 @@ const UserList = ({ filteredUsers }) => {
 
   const handleCloseDetail = () => {
     setSelectedUser(null);
+  };
+
+  const handleDeleteClick = (user) => {
+    setUserToDelete(user);
+  };
+
+  const handleCloseDelete = () => {
+    setUserToDelete(null);
+  }
+
+  const handleConfirmDelete = async (userId) => {
+    if (userToDelete && onDeleteUser) {
+      try {
+        // Call the delete API or function here
+        if (onDeleteUser) {
+          await onDeleteUser(userId);
+        }
+        setUserToDelete(null);
+      } catch (error) {
+        console.error('Error deleting user:', error);
+      }
+    }
   };
 
   return (
@@ -28,7 +52,7 @@ const UserList = ({ filteredUsers }) => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {filteredUsers.map((user) => (
+            {filteredUsers.map((user,idx) => (
               <tr key={user.id} className="hover:bg-gray-50">
                 <td className="px-6 py-4">
                   <div className="flex items-center">
@@ -68,7 +92,9 @@ const UserList = ({ filteredUsers }) => {
                     <button className="text-blue-600 hover:text-blue-800 transition-colors">
                       <Edit className="w-4 h-4" />
                     </button>
-                    <button className="text-red-600 hover:text-red-800 transition-colors">
+                    <button 
+                    onClick={()=>{handleDeleteClick(user)}}
+                    className="text-red-600 hover:text-red-800 transition-colors">
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
@@ -88,6 +114,14 @@ const UserList = ({ filteredUsers }) => {
       {/* User Detail Overlay */}
       {selectedUser && (
         <UserDetailOverlay user={selectedUser} onClose={handleCloseDetail} />
+      )}
+
+      {userToDelete && (
+        <DeleteOverlay
+          user={userToDelete}
+          onClose={handleCloseDelete}
+          onConfirm={handleConfirmDelete}
+        />
       )}
     </>
   );

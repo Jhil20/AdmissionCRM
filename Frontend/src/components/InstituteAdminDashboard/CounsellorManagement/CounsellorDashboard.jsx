@@ -1,131 +1,191 @@
-import AddCounsellorForm from "./AddCounsellorForm";
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import CounsellorHeader from "./CounsellorHeader";
 import CounsellorFilter from "./Filter";
 import CounsellorList from "./CounsellorTable";
+import AddCounsellorForm from "./AddCounsellorForm";
 import Sidebar from "../SideBar";
 import Header from "../Header";
 
+const API_URL = "http://localhost:8000/api/auth/admin/getCounsellorByInstitute";
+const CREATE_URL = "http://localhost:8000/api/auth/admin/c/create";
+
 const CounsellorDashboard = () => {
+  const [counsellors, setCounsellors] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("All");
-  const [showAddForm, setShowAddForm] = useState(false); // ✅ Added missing state
-  const [counsellors, setCounsellors] = useState([
-    {
-      id: 1,
-      name: "Alice Johnson",
-      email: "alice@example.com",
-      role: "Counsellor",
-      contact: "9876543210",
-      status: "Active",
-    },
-    {
-      id: 2,
-      name: "Bob Singh",
-      email: "bob@example.com",
-      role: "Counsellor",
-      contact: "9123456780",
-      status: "Inactive",
-    },
-    {
-      id: 4,
-      name: "David Patel",
-      email: "david@example.com",
-      role: "Counsellor",
-      contact: "9988776655",
-      status: "Active",
-    },
-  ]);
+  const [isFormOpen, setIsFormOpen] = useState(false);
 
-  // Filtering logic - filter by search and status only
-  const filteredUsers = useMemo(() => {
-    return counsellors.filter((user) => {
-      const matchesSearch =
-        user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.email.toLowerCase().includes(searchTerm.toLowerCase());
+  // Fetch all counsellors
+  const fetchCounsellors = async () => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("Token");
+      if (!token) return console.error("No auth token found");
 
-      const matchesStatus =
-        selectedStatus === "All" || user.status === selectedStatus;
+      const res = await fetch(`${API_URL}?page=0&size=50`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-      return matchesSearch && matchesStatus;
-    });
-  }, [searchTerm, selectedStatus, counsellors]);
+      if (!res.ok) throw new Error(`Error: ${res.status}`);
 
-  const handleAddCounsellor = () => {
-    setShowAddForm(true);
+      const data = await res.json();
+      console.log("Fetched counsellors:", data);
+
+      const mapped = data.content.map((u, idx) => ({
+        id: u.id,
+        name: u.firstName,
+        username: u.userName,
+        email: u.email,
+        role: "COUNSELLOR",
+        institute: u.instituteName || u.counsellorInstitute,
+        contact: u.mobileNumber,
+        status: u.active ? "Active" : "Inactive",
+        avatar: u.firstName ? u.firstName.slice(0, 2).toUpperCase() : "",
+        avatarBg: "bg-green-500",
+        specialization: u.specialization || "N/A",
+        designation: u.designation || "N/A",
+        alternateEmail: u.alternateEmail || "N/A",
+        bio: u.bio || "N/A",
+      }));
+
+      setCounsellors(mapped);
+    } catch (err) {
+      console.error("Error fetching counsellors:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleCancelForm = () => {
-    setShowAddForm(false);
+  useEffect(() => {
+    fetchCounsellors();
+  }, []);
+
+  // Filtered counsellors
+  const filteredCounsellors = counsellors.filter((user) => {
+    const name = (user.name || "").toLowerCase();
+    const email = (user.email || "").toLowerCase();
+
+    const matchesSearch =
+      name.includes(searchTerm.toLowerCase()) ||
+      email.includes(searchTerm.toLowerCase());
+
+    const matchesStatus =
+      selectedStatus === "All" || user.status === selectedStatus;
+
+    return matchesSearch && matchesStatus;
+  });
+
+  const handleDeleteClick = async (userId) => {
+    try {
+      const token = localStorage.getItem('Token');
+      if (!token) {
+        console.error("No auth token found in localStorage");
+        return;
+      }
+
+      const userToDelete = counsellors.find(user => user.id === userId);
+      console.log("User to delete:", userToDelete);
+      if (!userToDelete) {
+        console.error("User not found");
+        return;
+      }
+
+      // ✅ Single delete endpoint
+      const deleteEndpoint = `http://localhost:8000/api/auth/admin/delete/${userToDelete.id}`;
+
+      const res = await fetch(deleteEndpoint, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(`Failed to delete user: ${res.status} - ${errorText}`);
+      }
+
+      // ✅ Update UI
+      setCounsellors(prev => prev.filter(u => u.id !== userId));
+      console.log(`${userToDelete.role} deleted successfully`);
+
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    }
   };
 
-  const handleSubmitForm = (formData) => {
-    // Create new counsellor object
-    const newCounsellor = {
-      id: counsellors.length + 1,
-      name: `${formData.firstName} ${formData.lastName}`,
-      email: formData.email,
-      role: "Counsellor",
-      contact: formData.mobileNumber,
-      status: "Active",
-    };
 
-    // ✅ Update state correctly
-    setCounsellors((prev) => [...prev, newCounsellor]);
+  const handleAddClick = () => setIsFormOpen(true);
+  const handleFormCancel = () => setIsFormOpen(false);
 
-    // Hide the form
-    setShowAddForm(false);
+  const handleFormSubmit = async (formData) => {
+    try {
+      const token = localStorage.getItem("Token");
+      if (!token) return console.error("No auth token found");
 
-    console.log("New counsellor added:", newCounsellor);
+      const res = await fetch(CREATE_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!res.ok) throw new Error("Failed to create counsellor");
+
+      const data = await res.json();
+      console.log("Counsellor created:", data);
+
+      await fetchCounsellors();
+      setIsFormOpen(false);
+
+    } catch (err) {
+      console.error(err);
+      alert("Error creating counsellor. Please try again.");
+    }
   };
-
-  if (showAddForm) {
-    return (
-      <div className="flex h-screen bg-gray-50 overflow-hidden m-0 p-0">
-        {/* Sidebar */}
-        <div className="fixed left-0 top-0 h-full z-20">
-          <Sidebar />
-        </div>
-
-        {/* Main content */}
-        <div className="flex-1 flex flex-col min-w-0 ml-80">
-          {/* Fixed Header */}
-          <Header />
-
-          <div className="flex-1 overflow-auto mt-[4.5rem] p-6">
-            {/* ✅ Corrected form name */}
-            <AddCounsellorForm
-              selectedRole="COUNSELLOR"
-              onCancel={handleCancelForm}
-              onSubmit={handleSubmitForm}
-            />
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="flex h-screen bg-gray-50 overflow-hidden m-0 p-0">
-      {/* Sidebar */}
       <div className="fixed left-0 top-0 h-full z-20">
         <Sidebar />
       </div>
 
-      {/* Main content */}
       <div className="flex-1 flex flex-col min-w-0 ml-80">
-        {/* Fixed Header */}
         <Header />
 
         <div className="flex-1 overflow-auto mt-[4.5rem] p-6">
-          <CounsellorHeader onAddCounsellor={handleAddCounsellor} /> {/* ✅ Pass handler */}
-          <CounsellorFilter
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-            selectedStatus={selectedStatus}
-            setSelectedStatus={setSelectedStatus}
-          />
-          <CounsellorList filteredUsers={filteredUsers} />
+          {isFormOpen ? (
+            <AddCounsellorForm
+              selectedRole="COUNSELLOR"
+              onCancel={handleFormCancel}
+              onSubmit={handleFormSubmit}
+            />
+          ) : (
+            <>
+              <CounsellorHeader onAddCounsellor={handleAddClick} />
+              <CounsellorFilter
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
+                selectedStatus={selectedStatus}
+                setSelectedStatus={setSelectedStatus}
+              />
+              {loading ? (
+                <p className="text-gray-500">Loading counsellors...</p>
+              ) : (
+                <CounsellorList filteredUsers={filteredCounsellors} 
+                onDeleteUser={handleDeleteClick}
+                />
+              )}
+            </>
+          )}
         </div>
       </div>
     </div>

@@ -10,7 +10,9 @@ import lombok.NoArgsConstructor;
 @Data // generates the constructor matching JPQL
 @NoArgsConstructor
 public class ListResponseDTO {
+    private  String id;
     private String firstName;
+    private String username;
     private String email;
     private String mobileNumber;
     private Boolean isActive;
@@ -22,8 +24,10 @@ public class ListResponseDTO {
     private String alternateEmail;
     private String InstituteAdminInstitute;
 
-    public ListResponseDTO(String firstName, String email, String mobileNumber, Boolean isActive, Role role, String specialization, String bio, String instituteName, String designation, String alternateEmail, String InstituteAdminInstitute) {
+    public ListResponseDTO(String id, String firstName, String username ,String email, String mobileNumber, Boolean isActive, Role role, String specialization, String bio, String instituteName, String designation, String alternateEmail, String InstituteAdminInstitute ) {
+        this.id = id;
         this.firstName = firstName;
+        this.username = username;
         this.email = email;
         this.mobileNumber = mobileNumber;
         this.isActive = isActive;
@@ -34,6 +38,15 @@ public class ListResponseDTO {
         this.designation = designation;
         this.alternateEmail = alternateEmail;
         this.InstituteAdminInstitute = InstituteAdminInstitute;
+
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getFirstName() {
@@ -122,5 +135,21 @@ public class ListResponseDTO {
 
     public void setCounsellorInstitute(String InstituteAdminInstitute) {
         this.InstituteAdminInstitute = InstituteAdminInstitute;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getInstituteAdminInstitute() {
+        return InstituteAdminInstitute;
+    }
+
+    public void setInstituteAdminInstitute(String instituteAdminInstitute) {
+        InstituteAdminInstitute = instituteAdminInstitute;
     }
 }

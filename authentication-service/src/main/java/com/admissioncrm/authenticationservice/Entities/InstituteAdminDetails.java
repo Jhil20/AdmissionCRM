@@ -14,12 +14,13 @@ import java.time.LocalDateTime;
 public class    InstituteAdminDetails {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id; // Same as User ID (UUID)
 
-    @OneToOne
-    @MapsId
-    @JoinColumn(name = "user_id")
-    private User user;
+//    @OneToOne
+//    @MapsId
+//    @JoinColumn(name = "user_id")
+//    private User user;
 
     @Column(name = "designation", length = 100)
     private String designation = "Admission Coordinator";
@@ -76,13 +77,13 @@ public class    InstituteAdminDetails {
         this.id = id;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
+//    public User getUser() {
+//        return user;
+//    }
+//
+//    public void setUser(User user) {
+//        this.user = user;
+//    }
 
     public String getDesignation() {
         return designation;
