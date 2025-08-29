@@ -13,4 +13,5 @@ import java.util.List;
 public interface LeadRepository extends JpaRepository<Lead, String> {
 
     List<Lead> findAllByStatusOrderByCreatedAtAsc(LeadStatus status);
+    List<Lead> fiindAllByStatusOrderByCreatedAtAsc(LeadStatus status);
 }

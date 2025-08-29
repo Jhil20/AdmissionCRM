@@ -8,4 +8,6 @@ import org.springframework.stereotype.Service;
 public interface LeadService {
 
     public void insertLead(LeadRequest leadRequest,String instituteId);
+
+    public void assignLead(String userId, String leadId,String instituteId);
 }

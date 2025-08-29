@@ -1,6 +1,5 @@
 package com.admission_crm.lead_management.Config;
 
-import com.admission_crm.lead_management.Utils.CustomUserDetails;
 import com.admission_crm.lead_management.Utils.JwtUtils;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
@@ -45,12 +44,11 @@ public class JwtFilter extends OncePerRequestFilter {
 
                     List<SimpleGrantedAuthority> authorities=new ArrayList<>() ;
                     authorities.add(new SimpleGrantedAuthority("ROLE_"+role));
-
-                    CustomUserDetails principle = new CustomUserDetails(username,userId,authorities);
                     UsernamePasswordAuthenticationToken authToken =
-                            new UsernamePasswordAuthenticationToken(principle, null,principle.getAuthorities() );
+                            new UsernamePasswordAuthenticationToken(username, null,authorities );
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
+                    request.setAttribute("userId",userId);
                 }
             } catch (Exception e) {
                 logger.warn("JWT validation failed: {}");

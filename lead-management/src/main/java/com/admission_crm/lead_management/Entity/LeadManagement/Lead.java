@@ -41,6 +41,9 @@ public class Lead {
     @Column(name = "budget_range", length = 50)
     private String budgetRange;
 
+    @Column(name = "Subject")
+    private String subject;
+
     @Column(columnDefinition = "TEXT")
     private String description;
 

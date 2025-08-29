@@ -1,19 +1,16 @@
 package com.admission_crm.lead_management.Controller;
 
 import com.admission_crm.lead_management.DTO.LeadRequest;
-import com.admission_crm.lead_management.Entity.LeadManagement.Lead;
 import com.admission_crm.lead_management.Service.LeadService;
-import com.admission_crm.lead_management.Utils.CustomUserDetails;
 import com.admission_crm.lead_management.Utils.ErrorResponse;
 import com.admission_crm.lead_management.Utils.SuccessResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,10 +25,10 @@ public class LeadController {
     private LeadService leadService;
 
     @PostMapping("/create")
-    public ResponseEntity<?> createLead(@Valid @RequestBody LeadRequest leadRequest) {
+    @PreAuthorize("hasRole('STUDENT')")
+    public ResponseEntity<?> createLead(HttpServletRequest request, @Valid @RequestBody LeadRequest leadRequest) {
         try {
-            CustomUserDetails principle = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            String userId = principle.getUsername();
+            String userId = (String) request.getAttribute("userId");
             leadRequest.setUserId(userId);
             //Fetch instituteId from the name when APi is ready
             String instituteId = null;
@@ -52,5 +49,15 @@ public class LeadController {
         }
     }
 
-     
+    @PostMapping("/assign-lead/{counsellorId}")
+    @PreAuthorize("hasRole('INSTITUE_ADMIN')")
+    public ResponseEntity<?> assignLeadToCounsellor(@PathVariable String counsellorId,@RequestParam String leadId ) {
+        //verify the counsellor from the authentication service
+        try{
+
+        }
+        catch(Exception e){
+
+        }
+    }
 }

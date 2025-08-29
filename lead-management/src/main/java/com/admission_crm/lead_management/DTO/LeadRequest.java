@@ -15,6 +15,10 @@ public class LeadRequest {
     @Size(max = 100, message = "Institute name must not exceed 100 characters")
     private String instituteName;
 
+    @NotBlank(message = "Subject is required")
+    @Size(max = 50, message = "Subject must not exceed 50 characters")
+    private String subject;
+
     @NotBlank(message = "Course interested is required")
     @Size(max = 100, message = "Course interested must not exceed 100 characters")
     private String courseInterested;
