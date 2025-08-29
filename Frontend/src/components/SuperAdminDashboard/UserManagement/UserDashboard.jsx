@@ -6,6 +6,7 @@ import AddUserForm from './AddUserForm';
 import RoleSelectionModal from './RoleSelectionModal';
 import Sidebar from '../SideBar';
 import Header from '../Header';
+import {useSelector} from "react-redux";
 
 const API_BASE_URL = "http://localhost:8000/api/auth/admin/getAlliAdminCounsellor";
 
@@ -17,6 +18,7 @@ const UserDashboard = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [roleForNewUser, setRoleForNewUser] = useState('');
+  const selector = useSelector(state => state.authSlice.auth);
 
   useEffect(() => {
     fetchUsers();
@@ -39,7 +41,10 @@ const UserDashboard = () => {
         url += `&search=${encodeURIComponent(searchTerm)}`;
       }
 
-      const token = localStorage.getItem('Token');
+      // const token = localStorage.getItem('Token');
+      console.log(selector.userData)
+      const token = selector.userData.jwtToken
+      console.log(token);
       if (!token) {
         console.error("No auth token found in localStorage");
         setLoading(false);

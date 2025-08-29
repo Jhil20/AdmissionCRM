@@ -38,11 +38,15 @@ export default function Login() {
       if (data.role === 'UNIVERSITY_ADMIN') {
         navigate('/superadmin/dashboard');
       } else if (data.role === 'INSTITUTE_ADMIN') {
-        navigate('/admin/dashboard');
+        navigate('/instituteadmin/dashboard');
       } else if (data.role === 'counsellor') {
         navigate('/counsellor/COUNSELLOR');
-      } else {
-        navigate('/'); // fallback or user dashboard
+      } else if (data.role === 'STUDENT')
+      {
+        navigate('/student/dashboard')
+      }
+      else {
+        navigate('/signin'); // fallback or user dashboard
       }
 
     } catch (err) {

@@ -1,8 +1,13 @@
 import {createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    status : false,
-    userData : null
+    auth : {
+        status : false,
+        userData : {
+            jwtToken : null,
+            role : null
+        }
+    }
 }
 
 const authSlice = createSlice({
@@ -10,16 +15,17 @@ const authSlice = createSlice({
     initialState,
     reducers:{
         login : (state,action) => {
-            state.status = true
-            state.userData = action.payload
-            localStorage.setItem('Token', action.payload.jwtToken);
-            localStorage.setItem('Role',action.payload.role)
+            state.auth.status = true
+            state.auth.userData = action.payload
+            console.log("paylod in slice",action.payload)
+            // localStorage.setItem('Token', action.payload.jwtToken);
+            // localStorage.setItem('Role',action.payload.role)
         },
         logout : (state) => {
-            state.status = false
-            state.userData = null
-            localStorage.removeItem('Token');
-            localStorage.removeItem('Role');
+            state.auth.status = false
+            state.auth.userData = null
+            // localStorage.removeItem('Token');
+            // localStorage.removeItem('Role');
         }
     }
 })
