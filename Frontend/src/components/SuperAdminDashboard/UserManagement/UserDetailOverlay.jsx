@@ -84,7 +84,7 @@ const UserDetailOverlay = ({ user, onClose }) => {
                       value={user.bio || 'Experienced educational counsellor focused on student guidance and academic planning.'} 
                       isMultiline={true}
                     />
-                    <InfoRow icon={<Building className="w-5 h-5" />} label="Institute Name" value={user.instituteName || 'Charotar University of Science and Technology'} />
+                    <InfoRow icon={<Building className="w-5 h-5" />} label="Institute Name" value={user.institute || 'Charotar University of Science and Technology'} />
                   </div>
                 </>
               )}

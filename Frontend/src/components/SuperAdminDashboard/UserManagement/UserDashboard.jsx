@@ -102,9 +102,9 @@ const UserDashboard = () => {
 
   const handleDeleteClick = async (userId) => {
     try {
-      const token = localStorage.getItem('Token');
+      const token = selector.userData.jwtToken;
       if (!token) {
-        console.error("No auth token found in localStorage");
+        console.error("No auth token found");
         return;
       }
 
@@ -158,9 +158,9 @@ const UserDashboard = () => {
   const handleFormSubmit = async (formData) => {
 
     try {
-      const token = localStorage.getItem('Token');
+      const token = selector.userData.jwtToken
       if (!token) {
-        console.error("No auth token found in localStorage");
+        console.error("No auth token found ");
         return;
       }
 
