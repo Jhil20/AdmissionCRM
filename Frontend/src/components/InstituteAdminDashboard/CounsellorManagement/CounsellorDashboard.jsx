@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import CounsellorHeader from "./CounsellorHeader";
 import CounsellorFilter from "./Filter";
 import CounsellorList from "./CounsellorTable";
@@ -15,12 +16,17 @@ const CounsellorDashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("All");
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const selector = useSelector((state) => state.authSlice.auth);
+
+  
 
   // Fetch all counsellors
   const fetchCounsellors = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem("Token");
+      // const token = localStorage.getItem("Token");
+      const token = selector.userData.jwtToken;
+      
       if (!token) return console.error("No auth token found");
 
       const res = await fetch(`${API_URL}?page=0&size=50`, {
@@ -126,7 +132,7 @@ const CounsellorDashboard = () => {
 
   const handleFormSubmit = async (formData) => {
     try {
-      const token = localStorage.getItem("Token");
+      const token = selector.userData.jwtToken;
       if (!token) return console.error("No auth token found");
 
       const res = await fetch(CREATE_URL, {

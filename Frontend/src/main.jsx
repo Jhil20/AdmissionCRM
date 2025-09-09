@@ -11,6 +11,8 @@ import UserManagementDashboard from './components/SuperAdminDashboard/UserManage
 import InstituteAdminDashboard from './components/InstituteAdminDashboard/AnalyticsDashboard/InstituteAdminDashboard.jsx';
 import CounsellorDashboard from './components/InstituteAdminDashboard/CounsellorManagement/CounsellorDashboard.jsx';
 import LeadDashboard from './components/InstituteAdminDashboard/LeadManagement/LeadDashboard.jsx'
+import Profile from './components/Profile.jsx';
+
 
 const router = createBrowserRouter([
   {
@@ -44,6 +46,10 @@ const router = createBrowserRouter([
   {
     path: 'instituteadmin/lead-management',
     element: <LeadDashboard />
+  },
+  {
+    path: 'profile',
+    element: <Profile />   // ✅ New Profile route
   },
 ])
 

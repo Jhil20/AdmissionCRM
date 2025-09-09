@@ -1,9 +1,14 @@
 import React from 'react';
 import { Bell, User, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import Profile from '../Profile';
+
+
 
 const Header = ({ onLogout }) => {
   const navigate = useNavigate();
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const handleLogout = () => {
     // Remove token from localStorage
@@ -26,6 +31,18 @@ const Header = ({ onLogout }) => {
     console.log('User logged out successfully');
   };
 
+  // const handleProfileClick = () => {
+  //   setIsProfileOpen(true);
+  // };
+
+  //   const handleProfileClose = () => {
+  //   setIsProfileOpen(false);
+  // };
+  
+  const handleProfileClick = () => {
+    navigate("/profile"); // ✅ Navigate instead of opening modal
+  };
+
   return (
       <div className="fixed top-0 left-80 w-[calc(100%-20rem)] bg-white shadow px-6 py-4 z-10">
         {/* <div className="px-4 sm:px-6"></div> */}
@@ -46,10 +63,17 @@ const Header = ({ onLogout }) => {
               1
             </span>
             </div>
+
             <div className="flex items-center space-x-3">
-              <div className="bg-gray-600 rounded-full w-10 h-10 flex items-center justify-center">
+              
+             <button
+                onClick={handleProfileClick}
+                className="bg-gray-600 rounded-full w-10 h-10 flex items-center justify-center hover:bg-gray-700 transition-colors duration-200"
+                title="View Profile"
+              >
                 <User className="w-5 h-5 text-white" />
-              </div>
+              </button>
+
               <button
                   onClick={handleLogout}
                   className="flex items-center space-x-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors duration-200 text-sm font-medium"
@@ -61,6 +85,7 @@ const Header = ({ onLogout }) => {
           </div>
         </div>
       </div>
+    
   );
 };
 
