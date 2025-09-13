@@ -70,7 +70,8 @@ const UserDashboard = () => {
 
       const mappedUsers = data.content.map((u, idx) => ({
         id: u.id,
-        name: u.firstName,
+        firstName: u.firstName,
+        lastName: u.lastName,
         username: u.username,
         email: u.email,
         role: u.role === 'INSTITUTE_ADMIN' ? 'Institutional Admin' : 'Counsellor',

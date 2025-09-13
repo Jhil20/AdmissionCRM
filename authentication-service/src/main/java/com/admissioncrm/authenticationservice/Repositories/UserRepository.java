@@ -1,5 +1,10 @@
 package com.admissioncrm.authenticationservice.Repositories;
 
+import com.admissioncrm.authenticationservice.DTO.iAdminCounsellorCreation.CreateCounsellorRequest;
+import com.admissioncrm.authenticationservice.DTO.iAdminCounsellorCreation.CreateInstituteAdminRequest;
+import com.admissioncrm.authenticationservice.DTO.iAdminCounsellorCreation.UserCreateRequest;
+import com.admissioncrm.authenticationservice.DTO.iAdminCounsellorResponse.CounsellorResponseDTO;
+import com.admissioncrm.authenticationservice.DTO.iAdminCounsellorResponse.InstituteAdminResponseDTO;
 import com.admissioncrm.authenticationservice.DTO.iAdminCounsellorResponse.ListResponseDTO;
 import com.admissioncrm.authenticationservice.Entities.CoreEntities.Role;
 import com.admissioncrm.authenticationservice.Entities.CoreEntities.User;
@@ -18,8 +23,13 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, String> {
+
+    Optional<User> findByRole(Role role);
     Optional<User> findByEmail(String email);
     Optional<User> findByMobileNumber(String mobileNumber);
+    boolean existsByUsernameAndIdNot(String username,String id);
+    boolean existsByEmailAndIdNot(String email,String id);
+    boolean existsByMobileNumberAndIdNot(String mobileNumber,String id);
 
     boolean existsByMobileNumber(String mobileNumber);
 
@@ -41,9 +51,10 @@ public interface UserRepository extends JpaRepository<User, String> {
 //    Page<User> findAllByRoleWithDetails(@Param("role") Role role, Pageable pageable);
 
     @Query("""
-SELECT
+SELECT new com.admissioncrm.authenticationservice.DTO.iAdminCounsellorResponse.ListResponseDTO(
     u.id,
     u.firstName,
+    u.lastName,
     u.username,
     u.email,
     u.mobileNumber,
@@ -55,6 +66,7 @@ SELECT
     iad.designation,
     iad.alternateEmail,
     inst2.instituteName
+    )
 FROM User u
 LEFT JOIN CounsellorDetails cd ON cd.userId = u
 LEFT JOIN cd.institutionId inst1
@@ -66,4 +78,47 @@ WHERE u.role IN (
 )
 """)
     Page<ListResponseDTO> findCounsellorsAndAdminsRaw(Pageable pageable);
+
+    @Query("""
+SELECT new com.admissioncrm.authenticationservice.DTO.iAdminCounsellorResponse.CounsellorResponseDTO(
+    u.isActive,
+    u.firstName,
+    u.lastName,
+    u.username,
+    u.email,
+    u.mobileNumber,
+    cd.specialization,
+    cd.bio,
+    inst.instituteName
+    )
+FROM User u
+LEFT JOIN CounsellorDetails cd ON cd.userId = u
+LEFT JOIN Institution inst ON cd.institutionId = inst
+WHERE u.id = :userId
+
+""")
+    Optional<CounsellorResponseDTO> getCounsellorById(@Param("userId") String userId);
+
+
+    @Query("""
+SELECT new com.admissioncrm.authenticationservice.DTO.iAdminCounsellorResponse.InstituteAdminResponseDTO(
+    u.isActive,
+    u.firstName,
+    u.lastName,
+    u.username,
+    u.email,
+    u.mobileNumber,
+    iad.alternateEmail,
+    iad.designation,
+    inst.instituteName
+    )
+FROM User u
+LEFT JOIN InstituteAdminDetails iad ON iad.userId = u
+LEFT JOIN Institution inst ON iad.institutionId = inst
+WHERE u.id = :userId
+""")
+    Optional<InstituteAdminResponseDTO> getInstituteAdminById(@Param("userId") String userId);
+
+    @Query("select u.role from User u where u.id = :userId")
+    Role getRoleFromId(@Param("userId") String userId);
 }

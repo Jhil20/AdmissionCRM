@@ -211,4 +211,19 @@ public class User  {
         this.updatedAt = updatedAt;
     }
 
+    public CounsellorDetails getCouncellorId() {
+        return councellorId;
+    }
+
+    public void setCouncellorId(CounsellorDetails councellorId) {
+        this.councellorId = councellorId;
+    }
+
+    public InstituteAdminDetails getInstituteAdminId() {
+        return instituteAdminId;
+    }
+
+    public void setInstituteAdminId(InstituteAdminDetails instituteAdminId) {
+        this.instituteAdminId = instituteAdminId;
+    }
 }

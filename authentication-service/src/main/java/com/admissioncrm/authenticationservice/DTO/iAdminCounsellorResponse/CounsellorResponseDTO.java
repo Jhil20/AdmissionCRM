@@ -1,7 +1,9 @@
 package com.admissioncrm.authenticationservice.DTO.iAdminCounsellorResponse;
 
 import com.admissioncrm.authenticationservice.Entities.CoreEntities.Role;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class CounsellorResponseDTO {
     private String id;
     private String userName;
@@ -27,6 +29,18 @@ public class CounsellorResponseDTO {
         this.specialization = specialization;
         this.bio = bio;
         this.instituteName = instituteName;
+    }
+
+    public CounsellorResponseDTO(boolean isActive,String firstName, String lastName, String userName, String email, String mobileNumber, String specialization, String bio, String instituteName) {
+        this.userName = userName;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.mobileNumber = mobileNumber;
+        this.specialization = specialization;
+        this.bio = bio;
+        this.instituteName = instituteName;
+        this.isActive = isActive;
     }
 
     public String getId() {

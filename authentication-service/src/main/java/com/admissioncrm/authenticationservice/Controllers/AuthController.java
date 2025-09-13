@@ -2,8 +2,11 @@ package com.admissioncrm.authenticationservice.Controllers;
 
 import com.admissioncrm.authenticationservice.DTO.Jwt.JwtResponse;
 import com.admissioncrm.authenticationservice.DTO.LoginRequest;
+import com.admissioncrm.authenticationservice.DTO.iAdminCounsellorResponse.ListResponseDTO;
 import com.admissioncrm.authenticationservice.DTO.student.StudentLoginRequest;
 import com.admissioncrm.authenticationservice.DTO.student.StudentRegistrationRequest;
+import com.admissioncrm.authenticationservice.ExceptionHandling.ApiException;
+import com.admissioncrm.authenticationservice.ExceptionHandling.UsernameAlreadyExistsException.UsernameAlreadyExistsException;
 import com.admissioncrm.authenticationservice.Services.AuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -14,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.Optional;
 
 @RequestMapping("/auth")
 @RestController
@@ -37,6 +41,45 @@ public class AuthController {
        JwtResponse jwtResponse=authenticationService.registerStudent(request);
 
             return ResponseEntity.ok(jwtResponse);
+    }
+
+    @GetMapping("/profile")
+    @PreAuthorize("hasAnyRole('STUDENT','UNIVERSITY_ADMIN','COUNSELLOR','INSTITUTE_ADMIN')")
+    public ResponseEntity<?> getProfile(HttpServletRequest request){
+        String userId = (String) request.getAttribute("userId");
+        try {
+            Optional<?> profileDetails = authenticationService.getProfileDetailsByRole(userId);
+            if (profileDetails.isEmpty()){
+                throw new ApiException("User not found");
+            }
+            return ResponseEntity.ok(profileDetails.get());
+        }
+        catch(ApiException e)
+        {
+            return ResponseEntity.internalServerError().body("Error fetching profile details");
+        }
+    }
+
+    @PutMapping("/profile/update")
+    @PreAuthorize("hasAnyRole('STUDENT','UNIVERSITY_ADMIN','COUNSELLOR','INSTITUTE_ADMIN')")
+    public ResponseEntity<?> updateProfile(@RequestBody ListResponseDTO listResponseDTO,HttpServletRequest request){
+        try {
+            String userId = (String) request.getAttribute("userId");
+            listResponseDTO.setId(userId);
+            Optional<?> profileDetails = authenticationService.UpdateUserDetails(listResponseDTO);
+            if (profileDetails.isEmpty()){
+                throw new ApiException("User not found");
+            }
+            return ResponseEntity.ok(profileDetails.get());
+        }
+        catch (UsernameAlreadyExistsException e)
+        {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+        catch (ApiException e) {
+            return ResponseEntity.internalServerError().body("Error Updating profile details");
+        }
+
     }
 
 

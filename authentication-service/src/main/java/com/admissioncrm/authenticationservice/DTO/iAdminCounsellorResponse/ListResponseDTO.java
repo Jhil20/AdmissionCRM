@@ -1,6 +1,7 @@
 package com.admissioncrm.authenticationservice.DTO.iAdminCounsellorResponse;
 
 import com.admissioncrm.authenticationservice.Entities.CoreEntities.Role;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,9 +10,11 @@ import lombok.NoArgsConstructor;
 
 @Data // generates the constructor matching JPQL
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ListResponseDTO {
     private  String id;
     private String firstName;
+    private String lastName;
     private String username;
     private String email;
     private String mobileNumber;
@@ -24,9 +27,10 @@ public class ListResponseDTO {
     private String alternateEmail;
     private String InstituteAdminInstitute;
 
-    public ListResponseDTO(String id, String firstName, String username ,String email, String mobileNumber, Boolean isActive, Role role, String specialization, String bio, String instituteName, String designation, String alternateEmail, String InstituteAdminInstitute ) {
+    public ListResponseDTO(String id, String firstName,String lastName, String username ,String email, String mobileNumber, Boolean isActive, Role role, String specialization, String bio, String instituteName, String designation, String alternateEmail, String InstituteAdminInstitute ) {
         this.id = id;
         this.firstName = firstName;
+        this.lastName = lastName;
         this.username = username;
         this.email = email;
         this.mobileNumber = mobileNumber;
@@ -38,6 +42,24 @@ public class ListResponseDTO {
         this.designation = designation;
         this.alternateEmail = alternateEmail;
         this.InstituteAdminInstitute = InstituteAdminInstitute;
+
+    }
+
+
+    public ListResponseDTO(String firstName, String lastName, String username, String email, String mobileNumber, String specialization, String bio, String designation, String alternateEmail) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.username = username;
+        this.email = email;
+        this.mobileNumber = mobileNumber;
+        this.specialization = specialization;
+        this.bio = bio;
+        this.designation = designation;
+        this.alternateEmail = alternateEmail;
+    }
+
+    public ListResponseDTO()
+    {
 
     }
 
@@ -151,5 +173,13 @@ public class ListResponseDTO {
 
     public void setInstituteAdminInstitute(String instituteAdminInstitute) {
         InstituteAdminInstitute = instituteAdminInstitute;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 }
