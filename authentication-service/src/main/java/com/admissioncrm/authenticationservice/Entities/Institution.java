@@ -1,6 +1,7 @@
 package com.admissioncrm.authenticationservice.Entities;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
@@ -24,6 +25,9 @@ public class Institution {
 
     @Column(name = "institute_name", nullable = false, length = 150)
     private String instituteName;
+
+    @Column(name = "institute_fullform", length = 100)
+    private String instituteFullform;
 
     @Column(name = "type", length = 50)
     private String type; // e.g., "Engineering College", "Medical Institute", etc.
@@ -83,11 +87,14 @@ public class Institution {
     @Column(name = "linkedin_link", length = 255)
     private String linkedinLink;
 
+
     @OneToMany(mappedBy = "institutionId",cascade = CascadeType.ALL)
     private List<Course> coursesId;
 
+
     @OneToMany(mappedBy = "institutionId",cascade = CascadeType.ALL)
     private List<CounsellorDetails> counsellorId;
+
 
     @OneToOne(mappedBy = "institutionId")
     private InstituteAdminDetails institutionAdminId;
@@ -122,6 +129,14 @@ public class Institution {
 
     public void setInstituteName(String instituteName) {
         this.instituteName = instituteName;
+    }
+
+    public String getInstituteFullform() {
+        return instituteFullform;
+    }
+
+    public void setInstituteFullform(String instituteFullform) {
+        this.instituteFullform = instituteFullform;
     }
 
     public String getType() {

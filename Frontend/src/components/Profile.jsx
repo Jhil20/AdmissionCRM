@@ -41,11 +41,11 @@ const Profile = () => {
             if (!response.ok) throw new Error("Failed to fetch profile");
 
             const data = await response.json();
-
+            console.log("Fetched profile data:", data);
             const mappedData = {
                 isActive: data.isActive,
-                firstName: data.firstname || "",
-                lastName: data.lastname || "",
+                firstName: data.firstName || "",
+                lastName: data.lastName || "",
                 username: data.username || "",
                 email: data.email || "",
                 mobileNumber: data.mobileNumber || "",

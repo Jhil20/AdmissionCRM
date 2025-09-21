@@ -12,6 +12,7 @@ import InstituteAdminDashboard from './components/InstituteAdminDashboard/Analyt
 import CounsellorDashboard from './components/InstituteAdminDashboard/CounsellorManagement/CounsellorDashboard.jsx';
 import LeadDashboard from './components/InstituteAdminDashboard/LeadManagement/LeadDashboard.jsx'
 import Profile from './components/Profile.jsx';
+import StudentDashboard from './components/StudentDashboard/StudentDashboard.jsx';
 
 
 const router = createBrowserRouter([
@@ -51,6 +52,10 @@ const router = createBrowserRouter([
     path: 'profile',
     element: <Profile />   // ✅ New Profile route
   },
+  {
+    path: 'student/home',
+    element: <StudentDashboard />   // ✅ New Student Dashboard route
+  }
 ])
 
 createRoot(document.getElementById('root')).render(
