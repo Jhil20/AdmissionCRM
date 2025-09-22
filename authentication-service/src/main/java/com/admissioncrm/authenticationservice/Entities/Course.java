@@ -67,6 +67,9 @@ public class Course {
     @Column(name = "fee", precision = 10, scale = 2)
     private BigDecimal fee;
 
+    @Column(name = "admission_status", nullable = false)
+    private Boolean admissionStatus; // defa
+
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "institutionId", nullable = false,referencedColumnName = "id")
@@ -84,7 +87,7 @@ public class Course {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    public Course(String id, String name, String courseCode, String description, Integer years, Integer semester, DegreeType degreeType, String eligibilityCriteria, Integer totalSeatsAcpc, Integer totalSeatsManagement, Integer totalSeatsNri, Integer availableSeatsAcpc, Integer availableSeatsManagement, Integer availableSeatsNri, BigDecimal fee, Institution institutionId, LocalDate admissionStartDate, LocalDate admissionEndDate, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Course(String id, String name, String courseCode, String description, Integer years, Integer semester, DegreeType degreeType, String eligibilityCriteria, Integer totalSeatsAcpc, Integer totalSeatsManagement, Integer totalSeatsNri, Integer availableSeatsAcpc, Integer availableSeatsManagement, Integer availableSeatsNri, BigDecimal fee, Boolean admissionStatus,Institution institutionId, LocalDate admissionStartDate, LocalDate admissionEndDate, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.name = name;
         this.courseCode = courseCode;
@@ -100,6 +103,7 @@ public class Course {
         this.availableSeatsManagement = availableSeatsManagement;
         this.availableSeatsNri = availableSeatsNri;
         this.fee = fee;
+        this.admissionStatus=admissionStatus;
         this.institutionId = institutionId;
         this.admissionStartDate = admissionStartDate;
         this.admissionEndDate = admissionEndDate;
@@ -225,6 +229,14 @@ public class Course {
 
     public void setFee(BigDecimal fee) {
         this.fee = fee;
+    }
+
+    public Boolean getAdmissionStatus() {
+        return admissionStatus;
+    }
+
+    public void setAdmissionStatus(Boolean admissionStatus) {
+        this.admissionStatus = admissionStatus;
     }
 
     public Institution getInstitutionId() {

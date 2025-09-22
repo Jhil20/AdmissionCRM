@@ -21,10 +21,11 @@ public class CourseResponseDTO {
     private Integer availableSeatsManagement;
     private Integer availableSeatsNri;
     private BigDecimal fee;
+    private Boolean admissionStatus;
     private LocalDate admissionStartDate;
     private LocalDate admissionEndDate;
 
-    public CourseResponseDTO(Integer availableSeatsNri, String id, String name, String courseCode, String description, Integer years, Integer semester, DegreeType degreeType, String eligibilityCriteria, Integer totalSeatsAcpc, Integer totalSeatsManagement, Integer totalSeatsNri, Integer availableSeatsAcpc, Integer availableSeatsManagement, BigDecimal fee, LocalDate admissionStartDate, LocalDate admissionEndDate) {
+    public CourseResponseDTO(Integer availableSeatsNri, String id, String name, String courseCode, String description, Integer years, Integer semester, DegreeType degreeType, String eligibilityCriteria, Integer totalSeatsAcpc, Integer totalSeatsManagement, Integer totalSeatsNri, Integer availableSeatsAcpc, Integer availableSeatsManagement, BigDecimal fee, Boolean admissionStatus ,LocalDate admissionStartDate, LocalDate admissionEndDate) {
 
         this.availableSeatsNri = availableSeatsNri;
         this.id = id;
@@ -41,6 +42,7 @@ public class CourseResponseDTO {
         this.availableSeatsAcpc = availableSeatsAcpc;
         this.availableSeatsManagement = availableSeatsManagement;
         this.fee = fee;
+        this.admissionStatus = admissionStatus;
         this.admissionStartDate = admissionStartDate;
         this.admissionEndDate = admissionEndDate;
     }
@@ -163,6 +165,14 @@ public class CourseResponseDTO {
 
     public void setFee(BigDecimal fee) {
         this.fee = fee;
+    }
+
+    public Boolean getAdmissionStatus() {
+        return admissionStatus;
+    }
+
+    public void setAdmissionStatus(Boolean admissionStatus) {
+        admissionStatus = admissionStatus;
     }
 
     public LocalDate getAdmissionStartDate() {

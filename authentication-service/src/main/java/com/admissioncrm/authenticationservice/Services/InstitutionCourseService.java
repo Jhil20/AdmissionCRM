@@ -81,6 +81,7 @@ public class InstitutionCourseService {
                     course.getAvailableSeatsAcpc(),
                     course.getAvailableSeatsManagement(),
                     course.getFee(),
+                    course.getAdmissionStatus(),
                     course.getAdmissionStartDate(),
                     course.getAdmissionEndDate()
             );
