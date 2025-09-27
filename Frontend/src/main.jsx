@@ -12,7 +12,7 @@ import InstituteAdminDashboard from './components/InstituteAdminDashboard/Analyt
 import CounsellorDashboard from './components/InstituteAdminDashboard/CounsellorManagement/CounsellorDashboard.jsx';
 import LeadDashboard from './components/InstituteAdminDashboard/LeadManagement/LeadDashboard.jsx'
 import Profile from './components/Profile.jsx';
-import StudentDashboard from './components/StudentDashboard/StudentDashboard.jsx';
+import StudentDashboard from './components/StudentDashboard/Home/StudentDashboard.jsx';
 
 
 const router = createBrowserRouter([

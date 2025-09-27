@@ -22,10 +22,29 @@ public class MessageSender {
         MimeMessage message = javaMailSender.createMimeMessage();
 
         MimeMessageHelper helper = new MimeMessageHelper(message);
-        helper.setTo(to);
-        helper.setSubject(subject);
-        helper.setText(content, true);
-        helper.setFrom(sender);
+//        helper.setTo(to);
+//        helper.setSubject(subject);
+//        helper.setText(content, true);
+//        helper.setFrom(sender);
+
+        try {
+            helper.setTo(to);
+            helper.setSubject(subject);
+            helper.setText(content, true);
+            helper.setFrom(sender);
+
+            System.out.println("Sending email to: " + to);
+            System.out.println("Subject: " + subject);
+            System.out.println("HTML content: " + content);
+
+            javaMailSender.send(message);
+
+            System.out.println("Email sent successfully!");
+        } catch (MessagingException e) {
+            System.err.println("Failed to send email: " + e.getMessage());
+            throw e;
+        }
+
 
         javaMailSender.send(message);
     }

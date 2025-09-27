@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import Sidebar from "./Sidebar";
-import Header from "./Header";
+import Sidebar from "../Sidebar";
+import Header from "../Header";
 import InstituteCards from "./InstituteCards";
 import InstituteDetails from "./InstituteDetails";
 import AdmissionForm from "./AdmissionForm";
