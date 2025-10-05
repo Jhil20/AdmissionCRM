@@ -64,13 +64,13 @@ public class QueryService {
         } catch (ResourceNotFound | AdmissionInquiryException e) {
             throw e;
         }
-        catch (DataAccessException e)
-        {
-            throw new RuntimeException("Error Creating the Query");
-        }
-        catch (RuntimeException e)
-        {
-            throw new RuntimeException("Unexpected Error Creating the Query");
-        }
+//        catch (DataAccessException e)
+//        {
+//            throw new RuntimeException("Error Creating the Query");
+//        }
+//        catch (RuntimeException e)
+//        {
+//            throw new RuntimeException("Unexpected Error Creating the Query");
+//        }
     }
 }

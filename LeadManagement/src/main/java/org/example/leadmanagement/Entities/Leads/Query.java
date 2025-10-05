@@ -54,7 +54,7 @@ public class Query {
     @JoinColumn(name = "inquiry_id", nullable = true, foreignKey = @ForeignKey(name = "fk_query_inquiry"))
     private AdmissionInquiry admissionInquiry;
 
-    @OneToMany(mappedBy = "query",cascade = CascadeType.ALL,orphanRemoval = false)
+    @OneToMany(mappedBy = "query",orphanRemoval = false)
     private List<Lead> lead;
 
     @PrePersist

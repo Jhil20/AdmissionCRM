@@ -120,14 +120,13 @@ public class AdmissionInquiry {
 
     @OneToMany(
             mappedBy = "admissionInquiry",
-            cascade = CascadeType.ALL,
             orphanRemoval = true,
             fetch = FetchType.LAZY
     )
     private List<Query> queries;
 
     // One Inquiry -> Many Leads
-    @OneToMany(mappedBy = "admissionInquiry", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "admissionInquiry", orphanRemoval = true)
     private List<Lead> leads;
 
     @CreationTimestamp
