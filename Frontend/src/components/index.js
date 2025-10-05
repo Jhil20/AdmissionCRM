@@ -4,6 +4,7 @@ import Home from "./Home";
 import Header from "./Header/Header";
 import Footer from "./Footer/Footer";
 import SuperAdminDashboard from "./SuperAdminDashboard/AnalyticsDashboard/SuperAdminDashboard";
+import StudentDashboard from './StudentDashboard/Home/StudentDashboard';
 
 export {
     Login,
@@ -12,5 +13,6 @@ export {
     Header,
     Footer,
     SuperAdminDashboard,
+    StudentDashboard,
     
 }

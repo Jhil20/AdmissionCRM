@@ -6,6 +6,7 @@ import com.admissioncrm.authenticationservice.DTO.iAdminCounsellorCreation.UserC
 import com.admissioncrm.authenticationservice.DTO.iAdminCounsellorResponse.ListResponseDTO;
 import com.admissioncrm.authenticationservice.DTO.student.StudentLoginRequest;
 import com.admissioncrm.authenticationservice.DTO.student.StudentRegistrationRequest;
+import com.admissioncrm.authenticationservice.DTO.student.StudentRegistrationResponse;
 import com.admissioncrm.authenticationservice.Entities.CoreEntities.Role;
 import com.admissioncrm.authenticationservice.Entities.CoreEntities.User;
 
@@ -19,7 +20,9 @@ import com.admissioncrm.authenticationservice.Repositories.UserRepository;
 import com.admissioncrm.authenticationservice.Utilities.JwtUtils;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import org.example.communicationservice.DTO.AuthenticationDTO.EmailRequestDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -27,8 +30,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
 
 @Service
 public class AuthenticationService {
@@ -41,11 +48,15 @@ public class AuthenticationService {
     @Autowired
     InstituteAdminRepository instituteAdminRepository;
 
+
+
     @Autowired
     JwtUtils   jwtUtils;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    private final Random random = new Random();
 
     public ResponseEntity<JwtResponse> loginUser(@Valid LoginRequest loginRequest) {
         String identifier = loginRequest.getIdentifier();
@@ -62,6 +73,8 @@ public class AuthenticationService {
             throw new BadCredentialsException("Invalid credentials");
         }
 
+
+
         //generate the token
         try{
             String jwtToken = jwtUtils.generateToken(user.getUsername(), user.getRole(), user.getId());
@@ -75,9 +88,11 @@ public class AuthenticationService {
 
 
     //register Student
+    @Autowired
+   private RestTemplate restTemplate;
 
     @Transactional
-    public JwtResponse registerStudent(StudentRegistrationRequest request) {
+    public StudentRegistrationResponse registerStudent(StudentRegistrationRequest request) {
 
         if (userRepository.existsByMobileNumber(request.getMobileNumber())) {
             throw new ApiException("Mobile number already registered");
@@ -87,27 +102,73 @@ public class AuthenticationService {
             throw new ApiException("Email already registered");
         }
         User user = new User();
-        user.setUsername(request.getUsername());
+
         user.setMobileNumber(request.getMobileNumber());
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
         user.setEmail(request.getEmail());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
+
+        String username= generateUsername(request.getFirstName());
+        user.setUsername(username);
+        String rawPassword = generatePassword(8);
+        user.setPassword(passwordEncoder.encode(rawPassword));
         user.setRole(Role.STUDENT);
 
         user = userRepository.save(user);
+
+
         //Also add save the Student Details Entity in future for more user specific details
 
+        StudentRegistrationResponse studentRegistrationResponse = new StudentRegistrationResponse();
+        studentRegistrationResponse.setUsername(user.getUsername());
+        studentRegistrationResponse.setPassword(rawPassword);
+        studentRegistrationResponse.setEmail(user.getEmail());
 
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getMobileNumber(), request.getPassword())
-        );
+        EmailRequestDTO emailRequest = new EmailRequestDTO();
+        emailRequest.setRecipientEmail(user.getEmail());
+        emailRequest.setTemplateName("CREDENTIALS");
 
-        String jwtToken = jwtUtils.generateToken(user.getUsername(), Role.STUDENT, user.getId());
-        return new JwtResponse(jwtToken, Role.STUDENT);
+        Map<String,String> variables= new HashMap<>();
+        variables.put("firstName", user.getFirstName());
+        variables.put("userName", user.getUsername());
+        variables.put("password", rawPassword);
+        emailRequest.setVariables(variables);
+
+        String url = "http://localhost:8085/email/onRegister";
+        try{
+            restTemplate.postForEntity(url, emailRequest, String.class);
+        }
+        catch(Exception e){
+            throw new ApiException("Failed to register student");
+        }
+
+
+        return  studentRegistrationResponse;
 
 
     }
+
+    private String generateUsername(String firstName) {
+        String prefix=firstName.length() >=3 ? firstName.substring(0, 3) : firstName;
+        String username;
+        do {
+            int rand =100 + random.nextInt(999);
+            username = prefix + rand;
+        }while(userRepository.existsByUsername(username));
+        return username;
+    }
+
+    private String generatePassword(int length) {
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        StringBuilder sb = new StringBuilder();
+        for(int i = 0; i < length; i++)
+        {
+            sb.append(chars.charAt(random.nextInt(chars.length())));
+        }
+        return sb.toString();
+    }
+
+
 
     @Transactional
     public Optional<?> getProfileDetailsByRole(String userId)

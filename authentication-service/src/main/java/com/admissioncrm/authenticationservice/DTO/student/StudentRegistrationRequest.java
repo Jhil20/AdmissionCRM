@@ -18,8 +18,6 @@ public class StudentRegistrationRequest {
     @Email(message = "Invalid email format")
     private String email;
 
-    @NotBlank(message = "username is required")
-    private String username;
 
     @NotBlank(message = "First name is required")
     private String firstName;
@@ -27,16 +25,13 @@ public class StudentRegistrationRequest {
     @NotBlank(message = "Last name is required")
     private String lastName;
 
-    @NotBlank(message = "Password is required")
-    @Size(min = 6, message = "Password must be at least 6 characters")
-    private String password;
 
-    public StudentRegistrationRequest(String mobileNumber, String email, String firstName, String lastName, String password) {
+    public StudentRegistrationRequest(String mobileNumber, String email, String firstName, String lastName) {
         this.mobileNumber = mobileNumber;
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.password = password;
+
     }
 
     public @NotBlank(message = "Mobile number is required") @Pattern(regexp = "^[6-9]\\d{9}$", message = "Invalid mobile number format") String getMobileNumber() {
@@ -71,15 +66,6 @@ public class StudentRegistrationRequest {
         this.lastName = lastName;
     }
 
-    public @NotBlank(message = "Password is required") @Size(min = 6, message = "Password must be at least 6 characters") String getPassword() {
-        return password;
-    }
 
-    public void setPassword(@NotBlank(message = "Password is required") @Size(min = 6, message = "Password must be at least 6 characters") String password) {
-        this.password = password;
-    }
 
-    public @NotBlank(message = "username is required") String getUsername() {
-        return username;
-    }
 }

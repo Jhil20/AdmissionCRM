@@ -34,7 +34,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
                         // Allow actuator health checks or any other public endpoint
-                        .requestMatchers("/actuator/**","/error").permitAll()
+                        .requestMatchers("/actuator/**","/error","/email/onRegister").permitAll()
 
                         // Application form endpoints (require STUDENT role)
                         .requestMatchers("/applicationForm/onSubmission").hasRole("STUDENT")

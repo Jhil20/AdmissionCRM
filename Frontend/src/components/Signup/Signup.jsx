@@ -3,14 +3,14 @@ import { UserPlus, Lock, ArrowRight, Eye, EyeOff, Mail, User, Phone } from 'luci
 
 export default function Signup({ onSignup }) {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  // const [password, setPassword] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [username, setUsername] = useState('');
+  // const [username, setUsername] = useState('');
   const [mobileNumber, setMobileNumber] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
+  // const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async () => {
@@ -25,10 +25,10 @@ export default function Signup({ onSignup }) {
         body: JSON.stringify({ 
           "mobileNumber": mobileNumber,
           "email": email,
-          "username": username,
+          // "username": username,
           "firstName": firstName,
           "lastName": lastName,
-          "password": password
+          // "password": password
         }),
       });
       
@@ -156,7 +156,7 @@ export default function Signup({ onSignup }) {
               </div>
 
               {/* Username Field */}
-              <div className="relative">
+              {/* <div className="relative">
                 <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <input
                   type="text"
@@ -166,7 +166,7 @@ export default function Signup({ onSignup }) {
                   required
                   className="w-full px-3 py-2.5 pl-10 bg-gray-50/50 border border-gray-200/50 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white outline-none transition-all duration-200 text-gray-700 placeholder:text-gray-400 text-sm"
                 />
-              </div>
+              </div> */}
 
               {/* Email Field */}
               <div className="relative">
@@ -195,7 +195,7 @@ export default function Signup({ onSignup }) {
               </div>
 
               {/* Password Field */}
-              <div className="relative">
+              {/* <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <input
                   type={showPassword ? "text" : "password"}
@@ -212,7 +212,7 @@ export default function Signup({ onSignup }) {
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
-              </div>
+              </div> */}
 
               {/* Error Message */}
               {error && (

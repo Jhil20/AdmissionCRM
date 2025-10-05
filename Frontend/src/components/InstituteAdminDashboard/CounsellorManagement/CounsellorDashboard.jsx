@@ -4,7 +4,7 @@ import CounsellorHeader from "./CounsellorHeader";
 import CounsellorFilter from "./Filter";
 import CounsellorList from "./CounsellorTable";
 import AddCounsellorForm from "./AddCounsellorForm";
-import Sidebar from "../SideBar";
+import Sidebar from "../Sidebar";
 import Header from "../Header";
 
 const API_URL = "http://localhost:8000/api/auth/admin/getCounsellorByInstitute";

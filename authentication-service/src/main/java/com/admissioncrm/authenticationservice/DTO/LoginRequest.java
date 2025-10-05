@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class LoginRequest {
     @NotNull
-    @NotBlank(message = "identifeir should not be blank")
+    @NotBlank(message = "identifier should not be blank")
     String identifier;
 
     @NotNull

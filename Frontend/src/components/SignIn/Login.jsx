@@ -43,7 +43,7 @@ export default function Login() {
         navigate('/counsellor/COUNSELLOR');
       } else if (data.role === 'STUDENT')
       {
-        navigate('/student/dashboard')
+        navigate('/student/home');
       }
       else {
         navigate('/signin'); // fallback or user dashboard
