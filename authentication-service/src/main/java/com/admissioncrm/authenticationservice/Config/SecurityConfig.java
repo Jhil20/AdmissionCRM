@@ -48,7 +48,8 @@ public class SecurityConfig {
                         "/auth/iadmin/login",
                         "/auth/login",
                         "/actuator/**",
-                        "/error"
+                        "/error",
+                        "/api/internal/**"
                 ).permitAll();
 
 
@@ -59,6 +60,7 @@ public class SecurityConfig {
                 authorize.requestMatchers("/api/institute-admin/**").hasAnyRole("UNIVERSITY_ADMIN", "INSTITUTE_ADMIN");
                 authorize.requestMatchers("/api/counsellor/**").hasAnyRole("UNIVERSITY_ADMIN", "INSTITUTE_ADMIN", "COUNSELLOR");
                 authorize.requestMatchers("/api/student/**").hasRole("STUDENT");
+//                authorize.requestMatchers("/api/internal/**").hasAnyRole("UNIVERSITY_ADMIN","INSTITUTE_ADMIN","COUNSELLOR","STUDENT");
 
             //authentication needed for this
             authorize.anyRequest().authenticated();
