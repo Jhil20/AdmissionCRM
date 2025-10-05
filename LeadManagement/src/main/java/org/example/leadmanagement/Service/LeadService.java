@@ -12,10 +12,14 @@ import org.example.leadmanagement.Exception.ResourceNotFound;
 import org.example.leadmanagement.Repository.AdmissionInquiryRepo;
 import org.example.leadmanagement.Repository.LeadRepo;
 import org.example.leadmanagement.Repository.QueryRepo;
+import org.example.leadmanagement.Utils.LeadQueueJob;
+import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,6 +32,8 @@ public class LeadService {
     QueryRepo queryRepo;
     @Autowired
     private LeadRepo leadRepo;
+    @Autowired
+    private Scheduler scheduler;
 
     public LeadCreationRes createLead(LeadCreationReq leadCreationReq, String userId) {
         try {
@@ -61,17 +67,38 @@ public class LeadService {
             response.setLeadTrackingId(savedLead.getReferenceId());
             response.setLeadStatus(savedLead.getLeadStatus());
 
+            scheduleQueueJob(savedLead);
             return response;
         } catch (ResourceNotFound e) {
             throw e;
         }
-//        catch (DataAccessException e)
-//        {
-//            throw new LeadException("Lead creation Error");
-//        }
-//        catch(RuntimeException e)
-//        {
-//            throw new LeadException("Unexpected Lead creation Error");
-//        }
+        catch (DataAccessException e)
+        {
+            throw new LeadException("Lead creation Error");
+        }
+        catch(RuntimeException e)
+        {
+            throw new LeadException("Unexpected Lead creation Error");
+        } catch (SchedulerException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void scheduleQueueJob(Lead lead) throws SchedulerException {
+        JobDetail jobDetail = JobBuilder.newJob(LeadQueueJob.class)
+                .withIdentity("LeadJob-" + lead.getId())
+                .usingJobData("leadId", lead.getReferenceId())
+                .usingJobData("instituteId", lead.getAdmissionInquiry().getInstituteId())
+                .build();
+
+        Trigger trigger = TriggerBuilder.newTrigger()
+                .startAt(Date.from(
+                        lead.getCreatedAt().plusMinutes(30)
+                                .atZone(ZoneId.systemDefault())
+                                .toInstant()
+                ))
+                .build();
+
+        scheduler.scheduleJob(jobDetail, trigger);
     }
 }
