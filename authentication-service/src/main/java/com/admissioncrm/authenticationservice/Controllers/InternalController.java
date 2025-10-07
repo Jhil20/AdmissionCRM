@@ -56,4 +56,17 @@ public class InternalController {
             return ResponseEntity.internalServerError().build();
         }
     }
+
+    @GetMapping("/counsellors")
+    public ResponseEntity<?> getCounsellor(@RequestParam String InstituteId) {
+        try{
+            return ResponseEntity.ok(internalService.getCounsellorsFromInstitute(InstituteId));
+        }
+        catch (DataAccessException e){
+            return ResponseEntity.notFound().build();
+        }
+        catch(RuntimeException e){
+            return ResponseEntity.internalServerError().body("Unexpected Error");
+        }
+    }
 }

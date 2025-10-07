@@ -2,9 +2,7 @@ package org.example.leadmanagement.Service;
 
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Queue;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
@@ -22,5 +20,17 @@ public class InstituteQueueService {
             return queue.poll();
         }
         return null;
+    }
+
+    public boolean IsQueueEmpty(String instituteId) {
+        Queue<String> queue = instituteQueues.get(instituteId);
+        return queue == null || queue.isEmpty() || queue.poll() != null;
+    }
+
+    public String randomPickInstituteId()
+    {
+        Random rand = new Random();
+        List<String> instituteIds = new ArrayList<>(instituteQueues.keySet());
+        return instituteIds.get(rand.nextInt(instituteIds.size()));
     }
 }

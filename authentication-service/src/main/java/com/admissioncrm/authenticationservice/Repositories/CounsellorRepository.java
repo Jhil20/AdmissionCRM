@@ -1,5 +1,6 @@
 package com.admissioncrm.authenticationservice.Repositories;
 
+import com.admissioncrm.authenticationservice.DTO.InternalDTO.CounsellorResponse;
 import com.admissioncrm.authenticationservice.DTO.iAdminCounsellorResponse.CounsellorResponseDTO;
 import com.admissioncrm.authenticationservice.DTO.iAdminCounsellorResponse.ListResponseDTO;
 import com.admissioncrm.authenticationservice.Entities.CoreEntities.User;
@@ -10,6 +11,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public interface CounsellorRepository extends JpaRepository<CounsellorDetails, String> {
@@ -28,4 +31,14 @@ public interface CounsellorRepository extends JpaRepository<CounsellorDetails, S
             @Param("institutionId") String institutionId,
             Pageable pageable);
 
+    @Query("SELECT new com.admissioncrm.authenticationservice.DTO.InternalDTO.CounsellorResponse(" +
+            "u.id ,u.username, u.firstName, u.lastName, u.email, u.mobileNumber, u.isActive, u.role, " +
+            "c.specialization, c.bio, i.instituteName,c.maxQueriesHandling) " +
+            "FROM CounsellorDetails c " +
+            "JOIN c.userId u " +
+            "JOIN c.institutionId i " +
+            "JOIN InstituteAdminDetails ia ON ia.institutionId.id = i.id " +
+            "WHERE c.institutionId.id = :institutionId")
+    List<CounsellorResponse> findCounsellorsByInstituteId(
+            @Param("institutionId") String institutionId);
 }

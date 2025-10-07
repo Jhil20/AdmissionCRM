@@ -30,5 +30,10 @@ public class CounsellorQueueService {
         }
     }
 
+    public int getBothQueueSize(String counsellorId)
+    {
+        return assignedQueues.get(counsellorId).size() + followUpQueues.get(counsellorId).size();
+    }
+
 }
 
