@@ -1,11 +1,14 @@
 package com.admissioncrm.authenticationservice.DTO.Courses;
 
+import com.admissioncrm.authenticationservice.Enums.CategoryType;
+import com.admissioncrm.authenticationservice.Enums.Institute;
+
 public class InstitutionResponseDTO {
     private String id;
     private String institutionCode;
     private String instituteName;
     private String instituteFullform;
-    private String type;
+    private CategoryType type;
     private String description;
     private String address;
     private String city;
@@ -27,7 +30,7 @@ public class InstitutionResponseDTO {
     }
 
 
-    public InstitutionResponseDTO(String id, String institutionCode, String instituteName,String instituteFullform, String type,
+    public InstitutionResponseDTO(String id, String institutionCode, String instituteName,String instituteFullform, CategoryType type,
                                   String description, String address, String city, String state, String pincode,
                                   String contactEmail, String contactNumber, Integer establishedYear,
                                   String principalName, Integer maxLeadsAllowed, Boolean isActive,
@@ -73,6 +76,7 @@ public class InstitutionResponseDTO {
         this.institutionCode = institutionCode;
     }
 
+
     public String getInstituteName() {
         return instituteName;
     }
@@ -89,11 +93,11 @@ public class InstitutionResponseDTO {
         this.instituteFullform = instituteFullform;
     }
 
-    public String getType() {
+    public CategoryType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(CategoryType type) {
         this.type = type;
     }
 

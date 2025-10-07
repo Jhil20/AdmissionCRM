@@ -1,9 +1,12 @@
 package com.admissioncrm.authenticationservice.Services;
 
 import com.admissioncrm.authenticationservice.DTO.Courses.CourseResponseDTO;
+import com.admissioncrm.authenticationservice.DTO.Courses.InstituteFilterDTO;
 import com.admissioncrm.authenticationservice.DTO.Courses.InstitutionResponseDTO;
 import com.admissioncrm.authenticationservice.Entities.Course;
 import com.admissioncrm.authenticationservice.Entities.Institution;
+import com.admissioncrm.authenticationservice.Enums.CategoryType;
+import com.admissioncrm.authenticationservice.Enums.DegreeType;
 import com.admissioncrm.authenticationservice.Repositories.CourseRepository;
 import com.admissioncrm.authenticationservice.Repositories.InstitutionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,4 +92,19 @@ public class InstitutionCourseService {
         }
         return list;
     }
+
+    public List<InstituteFilterDTO> getInstitutionsByCategoryAndProgram(CategoryType category, DegreeType program) {
+        List<Institution> institutions = institutionRepository.findByCategoryAndProgram(category, program);
+        List<InstituteFilterDTO> list = new ArrayList<>();
+        for (Institution institution : institutions) {
+            InstituteFilterDTO dto = new InstituteFilterDTO();
+            dto.setId(institution.getId());
+            dto.setInstituteName(institution.getInstituteName());
+            dto.setProgram(institution.getProgram());
+            list.add(dto);
+        }
+        return list;
+    }
+
+
 }

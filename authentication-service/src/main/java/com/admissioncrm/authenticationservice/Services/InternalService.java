@@ -80,7 +80,7 @@ public class InternalService {
                     .state(institute.get().getState())
                     .pincode(institute.get().getPincode())
                     .institutionCode(institute.get().getInstitutionCode())
-                    .type(institute.get().getType())
+                    .type(institute.get().getType().name())
                     .description(institute.get().getDescription())
                     .contactEmail(institute.get().getContactEmail())
                     .contactNumber(institute.get().getContactNumber())

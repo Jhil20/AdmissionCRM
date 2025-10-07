@@ -1,7 +1,8 @@
 package com.admissioncrm.authenticationservice.Entities;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.admissioncrm.authenticationservice.Enums.CategoryType;
+import com.admissioncrm.authenticationservice.Enums.DegreeType;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
@@ -29,8 +30,19 @@ public class Institution {
     @Column(name = "institute_fullform", length = 100)
     private String instituteFullform;
 
-    @Column(name = "type", length = 50)
-    private String type; // e.g., "Engineering College", "Medical Institute", etc.
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type", length = 50, nullable = false)
+    private CategoryType type; // e.g., "Engineering College", "Medical Institute", etc.
+
+    @ElementCollection
+    @CollectionTable(
+            name = "institution_programs",
+            joinColumns = @JoinColumn(name = "institution_id")
+    )
+    @Enumerated(EnumType.STRING)
+    @Column(name = "program_type",length = 50)
+    private List<DegreeType> program;
+
 
     @Column(name = "description", length = 500)
     private String description;
@@ -123,6 +135,7 @@ public class Institution {
         this.institutionCode = institutionCode;
     }
 
+
     public String getInstituteName() {
         return instituteName;
     }
@@ -139,12 +152,20 @@ public class Institution {
         this.instituteFullform = instituteFullform;
     }
 
-    public String getType() {
+    public CategoryType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(CategoryType type) {
         this.type = type;
+    }
+
+    public List<DegreeType> getProgram() {
+        return program;
+    }
+
+    public void setProgram(List<DegreeType> program) {
+        this.program = program;
     }
 
     public String getDescription() {

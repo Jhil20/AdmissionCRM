@@ -1,6 +1,7 @@
 package com.admissioncrm.authenticationservice.Entities;
 
 
+import com.admissioncrm.authenticationservice.Enums.CategoryType;
 import com.admissioncrm.authenticationservice.Enums.DegreeType;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -87,7 +88,7 @@ public class Course {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    public Course(String id, String name, String courseCode, String description, Integer years, Integer semester, DegreeType degreeType, String eligibilityCriteria, Integer totalSeatsAcpc, Integer totalSeatsManagement, Integer totalSeatsNri, Integer availableSeatsAcpc, Integer availableSeatsManagement, Integer availableSeatsNri, BigDecimal fee, Boolean admissionStatus,Institution institutionId, LocalDate admissionStartDate, LocalDate admissionEndDate, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Course(String id, String name, String courseCode, String description, Integer years, Integer semester, DegreeType degreeType,String eligibilityCriteria, Integer totalSeatsAcpc, Integer totalSeatsManagement, Integer totalSeatsNri, Integer availableSeatsAcpc, Integer availableSeatsManagement, Integer availableSeatsNri, BigDecimal fee, Boolean admissionStatus,Institution institutionId, LocalDate admissionStartDate, LocalDate admissionEndDate, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.name = name;
         this.courseCode = courseCode;
@@ -166,6 +167,7 @@ public class Course {
     public void setDegreeType(DegreeType degreeType) {
         this.degreeType = degreeType;
     }
+
 
     public String getEligibilityCriteria() {
         return eligibilityCriteria;
