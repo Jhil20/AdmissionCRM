@@ -71,7 +71,7 @@ public class Lead {
     private LocalDateTime updatedAt;
 
     // Mapping to Admission Inquiry
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "admissionInquiry", nullable = false,
             foreignKey = @ForeignKey(name = "fk_lead_inquiry"))
     private AdmissionInquiry admissionInquiry;

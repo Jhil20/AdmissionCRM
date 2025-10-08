@@ -12,6 +12,7 @@ public class InstituteQueueService {
 
     public void enqueueLead(String instituteId, String leadId) {
         instituteQueues.computeIfAbsent(instituteId, k -> new LinkedList<>()).offer(leadId);
+        System.out.println(instituteQueues.get(instituteId).peek());
     }
 
     public String dequeueLead(String instituteId) {
@@ -23,14 +24,18 @@ public class InstituteQueueService {
     }
 
     public boolean IsQueueEmpty(String instituteId) {
-        Queue<String> queue = instituteQueues.get(instituteId);
-        return queue == null || queue.isEmpty() || queue.poll() != null;
+        System.out.println(instituteQueues.get(instituteId).isEmpty());
+        return instituteQueues.get(instituteId).isEmpty();
     }
 
     public String randomPickInstituteId()
     {
-        Random rand = new Random();
-        List<String> instituteIds = new ArrayList<>(instituteQueues.keySet());
-        return instituteIds.get(rand.nextInt(instituteIds.size()));
+        if(!instituteQueues.isEmpty() && instituteQueues.size() > 0)
+        {
+            Random rand = new Random();
+            List<String> instituteIds = new ArrayList<>(instituteQueues.keySet());
+            return instituteIds.get(rand.nextInt(instituteIds.size()));
+        }
+        return null;
     }
 }

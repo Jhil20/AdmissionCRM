@@ -32,7 +32,9 @@ public class CounsellorQueueService {
 
     public int getBothQueueSize(String counsellorId)
     {
-        return assignedQueues.get(counsellorId).size() + followUpQueues.get(counsellorId).size();
+        int assignedSize = assignedQueues.containsKey(counsellorId) ? assignedQueues.get(counsellorId).size() : 0;
+        int followSize = (followUpQueues.containsKey(counsellorId) ? followUpQueues.get(counsellorId).size() : 0);
+        return assignedSize + followSize;
     }
 
 }

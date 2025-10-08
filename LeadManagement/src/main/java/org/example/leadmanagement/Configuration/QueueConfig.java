@@ -22,7 +22,7 @@ public class QueueConfig {
         return args -> {
             // 1. Load queued leads into institute queues
             leadRepository.findByLeadStatusOrderByCreatedAt(LeadStatus.QUEUED)
-                    .forEach(lead -> instituteQueueService.enqueueLead(lead.getAdmissionInquiry().getInstituteId(), lead.getId()));
+                    .forEach(lead -> instituteQueueService.enqueueLead(lead.getAdmissionInquiry().getInstituteId(), lead.getReferenceId()));
 
             // 2. Load assigned leads into counsellor assigned queues
             leadRepository.findByLeadStatusOrderByCreatedAt(LeadStatus.ASSIGNED)

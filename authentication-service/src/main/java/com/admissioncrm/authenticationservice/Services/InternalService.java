@@ -131,9 +131,9 @@ public class InternalService {
         return user;
     }
 
-    public List<CounsellorResponse> getCounsellorsFromInstitute(String InstituteId)
+    public List<CounsellorResponse> getCounsellorsFromInstitute(String instituteId)
     {
-        List<CounsellorResponse> counsellors = counsellorRepository.findCounsellorsByInstituteId(InstituteId);
+        List<CounsellorResponse> counsellors = counsellorRepository.findCounsellorsByInstituteId(instituteId);
         if(counsellors.isEmpty())
         {
             throw new ResourceNotFoundException("Invalid Institutre Id");

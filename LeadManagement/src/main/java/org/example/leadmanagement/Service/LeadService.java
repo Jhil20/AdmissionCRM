@@ -48,6 +48,7 @@ public class LeadService {
     private InstituteQueueService instituteQueueService;
     @Autowired
     private AuthenticationServiceClient authenticationServiceClient;
+    @Autowired
     private CounsellorQueueService counsellorQueueService;
 
     public LeadCreationRes createLead(LeadCreationReq leadCreationReq, String userId) {
@@ -102,45 +103,64 @@ public class LeadService {
     @Scheduled(fixedRate = 60000)
     private void assignLead()
     {
-        String instituteId = instituteQueueService.randomPickInstituteId();
-
-        if(instituteQueueService.IsQueueEmpty(instituteId))
-        {
-            return;
-        }
-
-        List<CounsellorResponse> counsellors = authenticationServiceClient.fetchCounsellors(instituteId);
-        if(counsellors.isEmpty())
-        {
-            throw new ResourceNotFound("counsellors not found");
-        }
-
-        int index = roundRobinIndex.getOrDefault(instituteId,0);
-        int total = counsellors.size();
-
-        for (int i=0 ; i<total ; i++)
-        {
-            String counsellorId = counsellors.get((index + i) % total).getId();
-            int workload = counsellorQueueService.getBothQueueSize(counsellorId);
-
-            if(workload < counsellors.get((index + i) % total).getMaxLeadHandling())
+        try {
+            System.out.print("running assigning Lead");
+            String instituteId = instituteQueueService.randomPickInstituteId();
+            System.out.print(instituteId);
+            if(instituteId == null)
             {
-                String LeadId = instituteQueueService.dequeueLead(instituteId);
-                Optional<Lead> existedLead = leadRepo.findByReferenceId(LeadId);
-                if(existedLead.isEmpty())
-                {
-                    instituteQueueService.enqueueLead(instituteId,LeadId);
-                    throw new ResourceNotFound("Lead Not Found");
-                }
-                existedLead.get().setLeadStatus(LeadStatus.ASSIGNED);
-                existedLead.get().setAssignedTo(counsellors.get((index + i) % total).getId());
-                leadRepo.save(existedLead.get());
-
-                counsellorQueueService.assignLead(counsellorId,LeadId);
-
-                roundRobinIndex.put(instituteId,(index + i) % total);
-                break;
+                System.out.print("institute id null");
+                return;
             }
+
+            if(instituteQueueService.IsQueueEmpty(instituteId))
+            {
+                System.out.print("Queue empty");
+                return;
+            }
+
+            List<CounsellorResponse> counsellors = authenticationServiceClient.fetchCounsellors(instituteId);
+            if(counsellors.isEmpty())
+            {
+                System.out.print("Counsellor Not Found");
+                throw new ResourceNotFound("counsellors not found");
+            }
+
+            int index = roundRobinIndex.getOrDefault(instituteId,0);
+            int total = counsellors.size();
+
+            for (int i=0 ; i<total ; i++)
+            {
+                String counsellorId = counsellors.get((index + i) % total).getId();
+                int workload = counsellorQueueService.getBothQueueSize(counsellorId);
+
+                if(workload < counsellors.get((index + i) % total).getMaxLeadHandling())
+                {
+                    String LeadId = instituteQueueService.dequeueLead(instituteId);
+                    System.out.print(LeadId);
+                    Optional<Lead> existedLead = leadRepo.findByReferenceId(LeadId);
+                    if(existedLead.isEmpty())
+                    {
+                        instituteQueueService.enqueueLead(instituteId,LeadId);
+                        throw new ResourceNotFound("Lead Not Found");
+                    }
+                    existedLead.get().setLeadStatus(LeadStatus.ASSIGNED);
+                    existedLead.get().setAssignedTo(counsellors.get((index + i) % total).getId());
+                    leadRepo.save(existedLead.get());
+
+                    counsellorQueueService.assignLead(counsellorId,LeadId);
+
+                    roundRobinIndex.put(instituteId,(index + i) % total);
+                    System.out.print("Lead assigned to : "+counsellorId);
+                    break;
+                }
+            }
+        } catch (ResourceNotFound e) {
+            throw e;
+        }
+        catch(LeadException e)
+        {
+            throw new LeadException("Unexpected Lead Assigning Error");
         }
 
     }
@@ -159,7 +179,7 @@ public class LeadService {
 
         Trigger trigger = TriggerBuilder.newTrigger()
                 .startAt(Date.from(
-                        lead.getCreatedAt().plusMinutes(30)
+                        lead.getCreatedAt().plusMinutes(2)
                                 .atZone(ZoneId.systemDefault())
                                 .toInstant()
                 ))

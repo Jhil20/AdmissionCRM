@@ -37,8 +37,7 @@ public interface CounsellorRepository extends JpaRepository<CounsellorDetails, S
             "FROM CounsellorDetails c " +
             "JOIN c.userId u " +
             "JOIN c.institutionId i " +
-            "JOIN InstituteAdminDetails ia ON ia.institutionId.id = i.id " +
-            "WHERE c.institutionId.id = :institutionId")
+            "WHERE c.institutionId.id = :instituteId")
     List<CounsellorResponse> findCounsellorsByInstituteId(
-            @Param("institutionId") String institutionId);
+            @Param("instituteId") String instituteId);
 }
