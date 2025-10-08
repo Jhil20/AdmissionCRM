@@ -45,7 +45,7 @@ public class Lead {
 
 
     @Column(name = "assigned_to", nullable = true)
-    private Long assignedTo; // counsellorId (from another service)
+    private String assignedTo; // counsellorId (from another service)
 
     @Column(name = "lead_remark", length = 500)
     private String leadRemark;
@@ -71,7 +71,7 @@ public class Lead {
     private LocalDateTime updatedAt;
 
     // Mapping to Admission Inquiry
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "admissionInquiry", nullable = false,
             foreignKey = @ForeignKey(name = "fk_lead_inquiry"))
     private AdmissionInquiry admissionInquiry;
@@ -132,11 +132,11 @@ public class Lead {
         this.leadStatus = leadStatus;
     }
 
-    public Long getAssignedTo() {
+    public String getAssignedTo() {
         return assignedTo;
     }
 
-    public void setAssignedTo(Long assignedTo) {
+    public void setAssignedTo(String assignedTo) {
         this.assignedTo = assignedTo;
     }
 

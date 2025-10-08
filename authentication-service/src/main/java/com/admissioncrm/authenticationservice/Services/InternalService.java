@@ -1,5 +1,6 @@
 package com.admissioncrm.authenticationservice.Services;
 
+import com.admissioncrm.authenticationservice.DTO.InternalDTO.CounsellorResponse;
 import com.admissioncrm.authenticationservice.DTO.InternalDTO.CourseResponse;
 import com.admissioncrm.authenticationservice.DTO.InternalDTO.InstituteResponse;
 import com.admissioncrm.authenticationservice.DTO.InternalDTO.UserResponse;
@@ -7,6 +8,7 @@ import com.admissioncrm.authenticationservice.Entities.CoreEntities.User;
 import com.admissioncrm.authenticationservice.Entities.Course;
 import com.admissioncrm.authenticationservice.Entities.Institution;
 import com.admissioncrm.authenticationservice.ExceptionHandling.ResourceNotFoundException;
+import com.admissioncrm.authenticationservice.Repositories.CounsellorRepository;
 import com.admissioncrm.authenticationservice.Repositories.CourseRepository;
 import com.admissioncrm.authenticationservice.Repositories.InstitutionRepository;
 import com.admissioncrm.authenticationservice.Repositories.UserRepository;
@@ -14,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -24,6 +27,8 @@ public class InternalService {
     CourseRepository courseRepository;
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    CounsellorRepository counsellorRepository;
 
     public CourseResponse getCourseFromName(String courseName)
     {
@@ -124,5 +129,15 @@ public class InternalService {
         user.setUsername(existedUser.get().getUsername());
 
         return user;
+    }
+
+    public List<CounsellorResponse> getCounsellorsFromInstitute(String instituteId)
+    {
+        List<CounsellorResponse> counsellors = counsellorRepository.findCounsellorsByInstituteId(instituteId);
+        if(counsellors.isEmpty())
+        {
+            throw new ResourceNotFoundException("Invalid Institutre Id");
+        }
+        return counsellors;
     }
 }

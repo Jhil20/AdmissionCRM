@@ -1,15 +1,19 @@
 package org.example.leadmanagement.Client;
 
+import org.example.leadmanagement.DTO.InternalDTO.CounsellorResponse;
 import org.example.leadmanagement.DTO.InternalDTO.CourseResponse;
 import org.example.leadmanagement.DTO.InternalDTO.InstituteResponse;
 import org.example.leadmanagement.DTO.InternalDTO.UserResponse;
 import org.example.leadmanagement.Exception.ResourceNotFound;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.lang.module.ResolutionException;
+import java.util.List;
+import java.util.Objects;
 
 @Component
 public class AuthenticationServiceClient {
@@ -81,5 +85,25 @@ public class AuthenticationServiceClient {
         }
 
         throw new ResourceNotFound("User not found");
+    }
+
+    public List<CounsellorResponse> fetchCounsellors(String instituteId)
+    {
+        String url = "http://localhost:8000/api/internal/counsellors?instituteId={instituteId}";
+        HttpEntity<Void> requestEntity = createRequestEntityWithToken(null);
+        ResponseEntity<List<CounsellorResponse>> response = restTemplate.exchange(
+                url,
+                HttpMethod.GET,
+                requestEntity,
+                new ParameterizedTypeReference<List<CounsellorResponse>>() {},
+                instituteId
+        );
+
+        if (response.getStatusCode() == HttpStatus.OK)
+        {
+            return response.getBody();
+        }
+
+        throw new ResourceNotFound("Counsellors not found");
     }
 }
