@@ -22,8 +22,6 @@ public class QueryCreateDTOReq {
 
     private String AdmissionInquiryId;
 
-    @NotBlank(message = "Institute ID is required")
-    @Size(max = 150, message = "Institute ID must not exceed 150 characters")
     private String instituteId;
 
     @NotBlank(message = "Institute name is required")
@@ -54,11 +52,11 @@ public class QueryCreateDTOReq {
         AdmissionInquiryId = admissionInquiryId;
     }
 
-    public @NotBlank(message = "Institute ID is required") @Size(max = 150, message = "Institute ID must not exceed 150 characters") String getInstituteId() {
+    public String getInstituteId() {
         return instituteId;
     }
 
-    public void setInstituteId(@NotBlank(message = "Institute ID is required") @Size(max = 150, message = "Institute ID must not exceed 150 characters") String instituteId) {
+    public void setInstituteId(String instituteId) {
         this.instituteId = instituteId;
     }
 

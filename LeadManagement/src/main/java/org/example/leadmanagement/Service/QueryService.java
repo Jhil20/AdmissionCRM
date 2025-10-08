@@ -41,6 +41,11 @@ public class QueryService {
             }
             System.out.print(user.getMobileNumber());
             System.out.print(queryCreateDTOReq.getInstituteId());
+            if(queryCreateDTOReq.getInstituteId() == null)
+            {
+                queryCreateDTOReq.setInstituteId(authenticationServiceClient.fetchInstitute(queryCreateDTOReq.getInstituteName(),token).getId());
+                System.out.print(queryCreateDTOReq.getInstituteId());
+            }
             Optional<AdmissionInquiry> existedInquiry =  admissionInquiryRepo.findByUserIdAndInstituteId(userId,queryCreateDTOReq.getInstituteId());
             if(existedInquiry.isEmpty())
             {
@@ -64,13 +69,13 @@ public class QueryService {
         } catch (ResourceNotFound | AdmissionInquiryException e) {
             throw e;
         }
-//        catch (DataAccessException e)
-//        {
-//            throw new RuntimeException("Error Creating the Query");
-//        }
-//        catch (RuntimeException e)
-//        {
-//            throw new RuntimeException("Unexpected Error Creating the Query");
-//        }
+        catch (DataAccessException e)
+        {
+            throw new RuntimeException("Error Creating the Query");
+        }
+        catch (RuntimeException e)
+        {
+            throw new RuntimeException("Unexpected Error Creating the Query");
+        }
     }
 }

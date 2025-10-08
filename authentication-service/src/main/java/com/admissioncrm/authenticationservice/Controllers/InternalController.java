@@ -60,14 +60,14 @@ public class InternalController {
     @GetMapping("/counsellors")
     public ResponseEntity<?> getCounsellor(@RequestParam String instituteId) {
         System.out.print(instituteId);
-//        try{
+        try{
             return ResponseEntity.ok(internalService.getCounsellorsFromInstitute(instituteId));
-//        }
-//        catch (DataAccessException e){
-//            return ResponseEntity.notFound().build();
-//        }
-//        catch(RuntimeException e){
-//            return ResponseEntity.internalServerError().body("Unexpected Error");
-//        }
+        }
+        catch (DataAccessException e){
+            return ResponseEntity.notFound().build();
+        }
+        catch(RuntimeException e){
+            return ResponseEntity.internalServerError().body("Unexpected Error");
+        }
     }
 }
