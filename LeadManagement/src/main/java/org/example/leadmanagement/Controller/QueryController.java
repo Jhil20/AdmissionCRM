@@ -31,6 +31,8 @@ public class QueryController {
         try {
             token = token.startsWith("Bearer ") ? token.substring(7) : token;
             String userId = (String) request.getAttribute("userId");
+            System.out.println("Institute id : "+queryCreateDTOReq.getInstituteId());
+            System.out.println("admission inquiry id : "+queryCreateDTOReq.getAdmissionInquiryId());
             String queryId = queryService.createQuery(queryCreateDTOReq,userId,token);
             SuccessResponse successResponse = new SuccessResponse(
                     LocalDateTime.now(),

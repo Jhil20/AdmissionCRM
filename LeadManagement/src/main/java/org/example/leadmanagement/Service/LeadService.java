@@ -65,13 +65,13 @@ public class LeadService {
         } catch (ResourceNotFound e) {
             throw e;
         }
-//        catch (DataAccessException e)
-//        {
-//            throw new LeadException("Lead creation Error");
-//        }
-//        catch(RuntimeException e)
-//        {
-//            throw new LeadException("Unexpected Lead creation Error");
-//        }
+        catch (DataAccessException e)
+        {
+            throw new LeadException("Lead creation Error");
+        }
+        catch(RuntimeException e)
+        {
+            throw new LeadException("Unexpected Lead creation Error");
+        }
     }
 }
