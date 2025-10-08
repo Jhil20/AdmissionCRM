@@ -4,8 +4,10 @@ import org.example.leadmanagement.Client.AuthenticationServiceClient;
 import org.example.leadmanagement.DTO.AdmissionInquiry.Response.AdmissionInquiryCreateRes;
 import org.example.leadmanagement.DTO.InternalDTO.CounsellorResponse;
 import org.example.leadmanagement.DTO.InternalDTO.CourseResponse;
+import org.example.leadmanagement.DTO.InternalDTO.UserResponse;
 import org.example.leadmanagement.DTO.Lead.Request.LeadCreationReq;
 import org.example.leadmanagement.DTO.Lead.Response.LeadCreationRes;
+import org.example.leadmanagement.DTO.Lead.Response.ListLeadResponse;
 import org.example.leadmanagement.Entities.Leads.AdmissionInquiry;
 import org.example.leadmanagement.Entities.Leads.Lead;
 import org.example.leadmanagement.Entities.Leads.Query;
@@ -24,10 +26,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.ZoneId;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
@@ -163,6 +162,53 @@ public class LeadService {
             throw new LeadException("Unexpected Lead Assigning Error");
         }
 
+    }
+
+    public List<ListLeadResponse> listLeads(String userId,String token)
+    {
+        try {
+            UserResponse user = authenticationServiceClient.fetchUser(userId,token);
+            if(user == null)
+            {
+                throw new ResourceNotFound("User Not Found");
+            }
+            List<Lead> leads = leadRepo.findByUserId(userId);
+            List<ListLeadResponse> responseLeads = new ArrayList<>();
+            for(Lead lead : leads)
+            {
+                ListLeadResponse leadResponse = new ListLeadResponse();
+                leadResponse.setDate(lead.getUpdatedAt());
+                leadResponse.setLeadId(lead.getReferenceId());
+                leadResponse.setLeadStatus(lead.getLeadStatus().toString());
+                UserResponse assignedCounsellor = authenticationServiceClient.fetchUser(lead.getAssignedTo(),token);
+                leadResponse.setAssignedTo(assignedCounsellor.getFirstName() + " " + assignedCounsellor.getLastName());
+
+
+                if(lead.getQuery() != null && lead.getAdmissionInquiry() != null)
+                {
+                    leadResponse.setLeadDescription(lead.getQuery().getQuery());
+                    leadResponse.setInstituteName(lead.getAdmissionInquiry().getInstituteName());
+                    leadResponse.setLeadSubject(lead.getAdmissionInquiry().getSubject() + "AND " + lead.getQuery().getQuerySubject());
+                    leadResponse.setStudentName(lead.getAdmissionInquiry().getFirstName() + " " + lead.getAdmissionInquiry().getLastName());
+                } else if (lead.getQuery() == null) {
+                    leadResponse.setLeadDescription("No Query has been asked during Query submission so Admission Inquiry is treated as Lead");
+                    leadResponse.setInstituteName(lead.getAdmissionInquiry().getInstituteName());
+                    leadResponse.setLeadSubject(lead.getAdmissionInquiry().getSubject());
+                    leadResponse.setStudentName(lead.getAdmissionInquiry().getFirstName() + " " + lead.getAdmissionInquiry().getLastName());
+                }
+
+                responseLeads.add(leadResponse);
+            }
+            return responseLeads;
+        }
+        catch(ResourceNotFound e)
+        {
+            throw e;
+        }
+        catch(LeadException e)
+        {
+            throw new LeadException("Unexpected Lead Fetching Error");
+        }
     }
 
 

@@ -4,6 +4,7 @@ package org.example.leadmanagement.Controller;
 import jakarta.servlet.http.HttpServletRequest;
 import org.example.leadmanagement.DTO.Lead.Request.LeadCreationReq;
 import org.example.leadmanagement.DTO.Lead.Response.LeadCreationRes;
+import org.example.leadmanagement.DTO.Lead.Response.ListLeadResponse;
 import org.example.leadmanagement.Exception.LeadException;
 import org.example.leadmanagement.Service.LeadService;
 import org.example.leadmanagement.Utils.ErrorResponse;
@@ -13,12 +14,10 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 @RequestMapping("/api/lead")
@@ -50,5 +49,29 @@ public class LeadController {
             return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
+    }
+
+    @GetMapping("/student/list")
+    @PreAuthorize("hasRole('STUDENT')")
+    public ResponseEntity<?> listAllLeads(HttpServletRequest request,@RequestHeader("Authorization") String token) {
+        try{
+            String userId = (String) request.getAttribute("userId");
+            List<ListLeadResponse> leads = leadService.listLeads(userId,token);
+            SuccessResponse successResponse = new SuccessResponse(
+                    LocalDateTime.now(),
+                    HttpStatus.OK.value(),
+                    Map.of("Leads",leads)
+            );
+            return new ResponseEntity<>(successResponse, HttpStatus.OK);
+        }
+        catch(LeadException e)
+        {
+            ErrorResponse error = new ErrorResponse(
+                    LocalDateTime.now(),
+                    HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                    e.getMessage()
+            );
+            return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
