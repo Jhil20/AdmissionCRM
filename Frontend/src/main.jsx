@@ -13,6 +13,7 @@ import CounsellorDashboard from './components/InstituteAdminDashboard/Counsellor
 import LeadDashboard from './components/InstituteAdminDashboard/LeadManagement/LeadDashboard.jsx'
 import Profile from './components/Profile.jsx';
 import StudentDashboard from './components/StudentDashboard/Home/StudentDashboard.jsx';
+import QueriesDashboard from './components/StudentDashboard/Queries/QueriesDashboard.jsx'
 
 
 const router = createBrowserRouter([
@@ -55,6 +56,10 @@ const router = createBrowserRouter([
   {
     path: 'student/home',
     element: <StudentDashboard />   // ✅ New Student Dashboard route
+  },
+  {
+    path: 'student/queries',
+    element: <QueriesDashboard />   // ✅ New Student Queries route
   }
 ])
 

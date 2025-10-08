@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { User, Phone, Mail, MapPin, Globe, GraduationCap, Trophy, Award, ChevronRight, ChevronLeft, Check, Calendar, BookOpen } from "lucide-react";
+import { User, X, MapPin, Globe, GraduationCap, Trophy, Award, ChevronRight, ChevronLeft, Check, Calendar, BookOpen } from "lucide-react";
 
 const AdmissionForm = () => {
   const [selectedProgram, setSelectedProgram] = useState("");
@@ -13,8 +13,6 @@ const AdmissionForm = () => {
     state: '',
     country: '',
     gender: '',
-    mobileNumber: '',
-    email: '',
     dob: '',
     gujcetMarks: '',
     gujcetPercentileRank: '',
@@ -35,8 +33,8 @@ const AdmissionForm = () => {
       color: "from-green-500 to-emerald-600"
     },
     {
-      title: "Location & Contact", 
-      subtitle: "Where can we reach you?",
+      title: "Location Details",
+      subtitle: "Where are you from?",
       icon: MapPin,
       color: "from-green-500 to-emerald-600"
     },
@@ -100,7 +98,7 @@ const AdmissionForm = () => {
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
-    
+
     if (field === 'country') {
       setFormData(prev => ({ ...prev, state: '', city: '' }));
     } else if (field === 'state') {
@@ -125,11 +123,38 @@ const AdmissionForm = () => {
     alert("Admission enquiry submitted successfully!");
   };
 
+  const handleClose = () => {
+    if (window.confirm("Are you sure you want to close the form? Your progress will be lost.")) {
+      setCurrentStep(0);
+      setFormData({
+        firstName: '',
+        middleName: '',
+        lastName: '',
+        city: '',
+        state: '',
+        country: '',
+        gender: '',
+        dob: '',
+        gujcetMarks: '',
+        gujcetPercentileRank: '',
+        acpcRank: '',
+        twelfthPercentileRank: '',
+        instituteName: '',
+        instituteId: '',
+        courseName: '',
+        courseId: '',
+        category: ''
+      });
+      setSelectedProgram("");
+      setSelectedInstituteForm("");
+    }
+  };
+
   const isStepValid = () => {
     if (currentStep === 0) {
       return formData.firstName.trim() && formData.lastName.trim() && formData.gender && formData.dob;
     } else if (currentStep === 1) {
-      return formData.city && formData.state && formData.country && formData.mobileNumber.trim() && formData.email.trim();
+      return formData.city && formData.state && formData.country;
     } else if (currentStep === 2) {
       return formData.gujcetMarks && formData.gujcetPercentileRank && formData.twelfthPercentileRank;
     } else if (currentStep === 3) {
@@ -143,7 +168,7 @@ const AdmissionForm = () => {
 
   const renderStepContent = () => {
     const currentStepData = steps[currentStep];
-    
+
     return (
       <div className="h-full flex flex-col">
         {/* Step Header */}
@@ -159,7 +184,7 @@ const AdmissionForm = () => {
         <div className="flex-1 flex items-center justify-center">
           <div className="w-full max-w-3xl">
             {currentStep === 0 && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-1">
                     First Name <span className="text-red-500">*</span>
@@ -240,7 +265,7 @@ const AdmissionForm = () => {
             )}
 
             {currentStep === 1 && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-1">
                     Country <span className="text-red-500">*</span>
@@ -280,11 +305,11 @@ const AdmissionForm = () => {
                   </div>
                 </div>
 
-                <div>
+                <div className="md:col-span-2">
                   <label className="block text-sm font-semibold text-gray-700 mb-1">
                     City <span className="text-red-500">*</span>
                   </label>
-                  <div className="relative">
+                  <div className="relative max-w-md mx-auto">
                     <MapPin className="absolute left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
                     <select
                       value={formData.city}
@@ -299,45 +324,11 @@ const AdmissionForm = () => {
                     </select>
                   </div>
                 </div>
-
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1">
-                    Mobile Number <span className="text-red-500">*</span>
-                  </label>
-                  <div className="relative">
-                    <Phone className="absolute left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                    <input
-                      type="tel"
-                      value={formData.mobileNumber}
-                      onChange={(e) => handleInputChange('mobileNumber', e.target.value)}
-                      placeholder="Enter mobile number"
-                      className={`${inputClasses} pl-8`}
-                      pattern="[6-9][0-9]{9}"
-                      maxLength={10}
-                    />
-                  </div>
-                </div>
-
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-semibold text-gray-700 mb-1">
-                    Email Address <span className="text-red-500">*</span>
-                  </label>
-                  <div className="relative max-w-md mx-auto">
-                    <Mail className="absolute left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                    <input
-                      type="email"
-                      value={formData.email}
-                      onChange={(e) => handleInputChange('email', e.target.value)}
-                      placeholder="Enter email address"
-                      className={`${inputClasses} pl-8`}
-                    />
-                  </div>
-                </div>
               </div>
             )}
 
             {currentStep === 2 && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-1">
                     GUJCET Marks <span className="text-red-500">*</span>
@@ -411,7 +402,7 @@ const AdmissionForm = () => {
             )}
 
             {currentStep === 3 && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-1">
                     Program <span className="text-red-500">*</span>
@@ -505,8 +496,17 @@ const AdmissionForm = () => {
   };
 
   return (
-    <div className="fixed top-20 left-80 w-[calc(100%-20rem)] h-[calc(100vh-5rem)] bg-gradient-to-br from-green-50 via-white to-blue-50 overflow-hidden">
-      <div className="h-full flex flex-col p-4">
+    <div className="fixed top-20 left-100 w-[calc(100%-26rem)] h-[calc(100vh-5rem)] bg-transparent overflow-hidden">
+
+      <div className="h-full flex flex-col p-4 relative">
+        {/* Close Button */}
+        <button
+          className="absolute top-6 right-6 text-gray-400 hover:text-gray-700 transition-colors duration-200"
+          aria-label="Close"
+        >
+          <X size={22} strokeWidth={2} />
+        </button>
+
         {/* Header */}
         <div className="text-center py-2">
           <h1 className="text-2xl font-bold text-gray-800 mb-1">
@@ -522,11 +522,10 @@ const AdmissionForm = () => {
           <div className="flex items-center justify-center space-x-6">
             {steps.map((step, index) => (
               <div key={index} className="flex items-center">
-                <div className={`flex items-center justify-center w-8 h-8 rounded-full border-2 transition-all duration-300 ${
-                  index <= currentStep 
-                    ? 'bg-green-500 border-green-500 text-white' 
-                    : 'bg-white border-gray-300 text-gray-400'
-                }`}>
+                <div className={`flex items-center justify-center w-8 h-8 rounded-full border-2 transition-all duration-300 ${index <= currentStep
+                  ? 'bg-green-500 border-green-500 text-white'
+                  : 'bg-white border-gray-300 text-gray-400'
+                  }`}>
                   {index < currentStep ? (
                     <Check className="w-4 h-4" />
                   ) : (
@@ -534,9 +533,8 @@ const AdmissionForm = () => {
                   )}
                 </div>
                 {index < steps.length - 1 && (
-                  <div className={`w-12 h-0.5 mx-2 transition-all duration-300 ${
-                    index < currentStep ? 'bg-green-500' : 'bg-gray-300'
-                  }`} />
+                  <div className={`w-12 h-0.5 mx-2 transition-all duration-300 ${index < currentStep ? 'bg-green-500' : 'bg-gray-300'
+                    }`} />
                 )}
               </div>
             ))}
@@ -549,8 +547,8 @@ const AdmissionForm = () => {
         </div>
 
         {/* Form Content */}
-        <div className="flex-1 bg-white rounded-xl shadow-lg p-4 flex flex-col overflow-hidden">
-          <div className="flex-1 overflow-hidden">
+        <div className="flex-1 bg-white rounded-xl shadow-lg p-4 flex flex-col overflow-hidden min-h-0">
+          <div className="flex-1 overflow-y-auto overflow-x-hidden px-2" style={{ maxHeight: 'calc(100vh - 20rem)' }}>
             {renderStepContent()}
           </div>
 
@@ -559,11 +557,10 @@ const AdmissionForm = () => {
             <button
               onClick={handlePrevious}
               disabled={currentStep === 0}
-              className={`flex items-center px-3 py-2 rounded-lg font-semibold transition-all duration-200 text-sm ${
-                currentStep === 0
-                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-              }`}
+              className={`flex items-center px-3 py-2 rounded-lg font-semibold transition-all duration-200 text-sm ${currentStep === 0
+                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                }`}
             >
               <ChevronLeft className="w-4 h-4 mr-1" />
               Previous
@@ -573,11 +570,10 @@ const AdmissionForm = () => {
               <button
                 onClick={handleSubmit}
                 disabled={!isStepValid()}
-                className={`flex items-center px-4 py-2 rounded-lg font-semibold transition-all duration-200 text-sm ${
-                  isStepValid()
-                    ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:from-green-600 hover:to-emerald-700 shadow-lg'
-                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                }`}
+                className={`flex items-center px-4 py-2 rounded-lg font-semibold transition-all duration-200 text-sm ${isStepValid()
+                  ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:from-green-600 hover:to-emerald-700 shadow-lg'
+                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  }`}
               >
                 Submit Application
                 <Trophy className="w-4 h-4 ml-1" />
@@ -586,11 +582,10 @@ const AdmissionForm = () => {
               <button
                 onClick={handleNext}
                 disabled={!isStepValid()}
-                className={`flex items-center px-3 py-2 rounded-lg font-semibold transition-all duration-200 text-sm ${
-                  isStepValid()
-                    ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:from-green-600 hover:to-emerald-700 shadow-lg'
-                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                }`}
+                className={`flex items-center px-3 py-2 rounded-lg font-semibold transition-all duration-200 text-sm ${isStepValid()
+                  ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:from-green-600 hover:to-emerald-700 shadow-lg'
+                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  }`}
               >
                 Next
                 <ChevronRight className="w-4 h-4 ml-1" />

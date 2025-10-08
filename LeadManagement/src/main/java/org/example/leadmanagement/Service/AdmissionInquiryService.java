@@ -3,6 +3,7 @@ package org.example.leadmanagement.Service;
 import org.example.leadmanagement.Client.AuthenticationServiceClient;
 import org.example.leadmanagement.DTO.AdmissionInquiry.Request.AdmissionInquiryCreateReq;
 import org.example.leadmanagement.DTO.AdmissionInquiry.Response.AdmissionInquiryCreateRes;
+import org.example.leadmanagement.DTO.AdmissionInquiry.Response.InstituteEnquiryDTO;
 import org.example.leadmanagement.DTO.InternalDTO.UserResponse;
 import org.example.leadmanagement.Entities.Leads.AdmissionInquiry;
 import org.example.leadmanagement.Exception.AdmissionInquiryException;
@@ -13,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -83,6 +86,24 @@ public class AdmissionInquiryService {
         catch (RuntimeException e) {
             throw new AdmissionInquiryException("Unexpected error while Admission Inquiry");
         }
+    }
+
+    public boolean hasAdmissionEnquiry(String userId) {
+        return admissionInquiryRepo.existsByUserId(userId);
+    }
+
+    public List<InstituteEnquiryDTO> getInstituteByUserId(String userId) {
+        List<AdmissionInquiry> inquiryList = admissionInquiryRepo.findByUserId(userId);
+        List<InstituteEnquiryDTO> dtoList = new ArrayList<>();
+
+        for (AdmissionInquiry inquiry : inquiryList) {
+            InstituteEnquiryDTO dto = new InstituteEnquiryDTO();
+            dto.setInstituteId(inquiry.getInstituteId());
+            dto.setInstituteName(inquiry.getInstituteName());
+
+            dtoList.add(dto);
+        }
+        return dtoList;
     }
 
 }

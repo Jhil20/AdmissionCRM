@@ -5,6 +5,7 @@ import Header from "./Header/Header";
 import Footer from "./Footer/Footer";
 import SuperAdminDashboard from "./SuperAdminDashboard/AnalyticsDashboard/SuperAdminDashboard";
 import StudentDashboard from './StudentDashboard/Home/StudentDashboard';
+import QueriesDashboard from './StudentDashboard/Queries/QueriesDashboard';
 
 export {
     Login,
@@ -14,5 +15,6 @@ export {
     Footer,
     SuperAdminDashboard,
     StudentDashboard,
+    QueriesDashboard
     
 }

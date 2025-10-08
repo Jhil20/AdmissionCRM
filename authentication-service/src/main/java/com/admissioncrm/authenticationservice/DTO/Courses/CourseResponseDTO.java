@@ -1,5 +1,6 @@
 package com.admissioncrm.authenticationservice.DTO.Courses;
 
+import com.admissioncrm.authenticationservice.Enums.CategoryType;
 import com.admissioncrm.authenticationservice.Enums.DegreeType;
 
 import java.math.BigDecimal;
@@ -25,7 +26,9 @@ public class CourseResponseDTO {
     private LocalDate admissionStartDate;
     private LocalDate admissionEndDate;
 
-    public CourseResponseDTO(Integer availableSeatsNri, String id, String name, String courseCode, String description, Integer years, Integer semester, DegreeType degreeType, String eligibilityCriteria, Integer totalSeatsAcpc, Integer totalSeatsManagement, Integer totalSeatsNri, Integer availableSeatsAcpc, Integer availableSeatsManagement, BigDecimal fee, Boolean admissionStatus ,LocalDate admissionStartDate, LocalDate admissionEndDate) {
+
+
+    public CourseResponseDTO(Integer availableSeatsNri, String id, String name, String courseCode, String description, Integer years, Integer semester, DegreeType degreeType, String eligibilityCriteria, Integer totalSeatsAcpc, Integer totalSeatsManagement, Integer totalSeatsNri, Integer availableSeatsAcpc, Integer availableSeatsManagement, BigDecimal fee, Boolean admissionStatus , LocalDate admissionStartDate, LocalDate admissionEndDate) {
 
         this.availableSeatsNri = availableSeatsNri;
         this.id = id;
@@ -102,6 +105,7 @@ public class CourseResponseDTO {
     public void setDegreeType(DegreeType degreeType) {
         this.degreeType = degreeType;
     }
+
 
     public String getEligibilityCriteria() {
         return eligibilityCriteria;
