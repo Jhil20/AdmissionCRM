@@ -85,9 +85,9 @@ export default function Login() {
           <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight text-white">
             Welcome to
             <br />
-            <span className="text-emerald-100">EduCRM</span>
+            <span className="text-emerald-100">Pravesh Path</span>
             <br />
-            <span className="text-teal-100">Admission Suite</span>
+            <span className="text-teal-100">Step In, Stand Out</span>
           </h1>
           <p className="text-xl md:text-2xl text-emerald-50 leading-relaxed font-light mb-8">
             Transform your institution's admission process with our comprehensive CRM platform.
@@ -112,7 +112,7 @@ export default function Login() {
 
         {/* Footer - Fixed Position */}
         <div className="absolute bottom-6 left-8 text-white/60 text-sm">
-          © 2025 EduCRM. All rights reserved.
+          © 2025 Pravesh Path. All rights reserved.
         </div>
       </div>
 

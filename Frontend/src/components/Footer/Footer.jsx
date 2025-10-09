@@ -101,9 +101,9 @@ function Footer() {
                 </div>
                 <div>
                   <h3 className="text-3xl font-bold bg-gradient-to-r from-white via-emerald-200 to-teal-200 bg-clip-text text-transparent">
-                    EduCRM
+                    Pravesh Path
                   </h3>
-                  <p className="text-base text-gray-400 font-medium">Admission Suite Pro</p>
+                  <p className="text-base text-gray-400 font-medium">Step In, Stand Out</p>
                 </div>
               </div>
               
@@ -119,7 +119,7 @@ function Footer() {
                   </div>
                   <div>
                     <p className="text-gray-400 text-xs font-medium">Email Support</p>
-                    <span className="text-white text-base font-semibold">hello@educrm.com</span>
+                    <span className="text-white text-base font-semibold">query@praveshpath.com</span>
                   </div>
                 </div>
                 
@@ -129,7 +129,7 @@ function Footer() {
                   </div>
                   <div>
                     <p className="text-gray-400 text-xs font-medium">24/7 Hotline</p>
-                    <span className="text-white text-base font-semibold">+1 (555) 123-4567</span>
+                    <span className="text-white text-base font-semibold">+91 9327955353</span>
                   </div>
                 </div>
 
@@ -139,7 +139,7 @@ function Footer() {
                   </div>
                   <div>
                     <p className="text-gray-400 text-xs font-medium">Headquarters</p>
-                    <span className="text-white text-base font-semibold">San Francisco, CA</span>
+                    <span className="text-white text-base font-semibold">Gujarat, India</span>
                   </div>
                 </div>
               </div>
@@ -319,7 +319,7 @@ function Footer() {
           <div className="flex flex-col lg:flex-row justify-between items-center space-y-4 lg:space-y-0">
             <div className="flex items-center space-x-6">
               <p className="text-gray-400 text-sm">
-                &copy; 2024 EduCRM. All rights reserved.
+                &copy; 2024 Pravesh Path. All rights reserved.
               </p>
               <div className="flex items-center space-x-1 text-emerald-400 text-sm">
                 <Zap className="h-4 w-4" />

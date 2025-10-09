@@ -55,6 +55,7 @@ public class QueryService {
             {
                 queryCreateDTOReq.setAdmissionInquiryId(existedInquiry.get().getId());
             }
+
             Query query = new Query();
             query.setQuery(queryCreateDTOReq.getQuery());
             query.setInstituteId(queryCreateDTOReq.getInstituteId());

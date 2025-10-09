@@ -61,7 +61,7 @@ export default function Home() {
     {
       name: "Dr. Emma Wilson",
       role: "Director of Admissions, State University",
-      content: "EduCRM has revolutionized how we handle applications. Our processing time has decreased by 60% while maintaining quality.",
+      content: "Pravesh Path has revolutionized how we handle applications. Our processing time has decreased by 60% while maintaining quality.",
       rating: 5,
       image: "https://images.unsplash.com/photo-1692952565559-a7c9ac80ea98?q=80&w=464&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
     },
@@ -223,7 +223,7 @@ export default function Home() {
               Trusted by Educators
             </h2>
             <p className="text-xl text-gray-600">
-              See what admission professionals are saying about EduCRM
+              See what admission professionals are saying about Pravesh Path
             </p>
           </div>
 
@@ -277,7 +277,7 @@ export default function Home() {
             Ready to Transform Your Admissions?
           </h2>
           <p className="text-xl text-emerald-100 mb-12 max-w-3xl mx-auto">
-            Join hundreds of institutions already using EduCRM to simplify their admission process and improve student experience.
+            Join hundreds of institutions already using Pravesh Path to simplify their admission process and improve student experience.
           </p>
           <div className="flex flex-col sm:flex-row gap-6 justify-center">
             <button className="bg-white text-emerald-600 px-10 py-4 rounded-xl text-lg font-semibold hover:bg-gray-50 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">

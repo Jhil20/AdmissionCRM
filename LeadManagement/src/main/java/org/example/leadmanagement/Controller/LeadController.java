@@ -9,6 +9,7 @@ import org.example.leadmanagement.Exception.LeadException;
 import org.example.leadmanagement.Service.LeadService;
 import org.example.leadmanagement.Utils.ErrorResponse;
 import org.example.leadmanagement.Utils.SuccessResponse;
+import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
@@ -47,6 +48,8 @@ public class LeadController {
                     e.getMessage()
             );
             return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (SchedulerException e) {
+            throw new RuntimeException(e);
         }
 
     }

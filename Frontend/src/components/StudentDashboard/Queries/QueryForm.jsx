@@ -34,12 +34,12 @@ const QueryForm = ({ onClose }) => {
 
   const [instituteList, setInstituteList] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
 
-  // ✅ Get token from Redux
   const selector = useSelector((state) => state.authSlice.auth);
   const token = selector?.userData?.jwtToken;
 
-  // ✅ Fetch institutes (only those where admission inquiry is done)
+  // Fetch institutes where admission inquiry is done
   useEffect(() => {
     const fetchInstitutes = async () => {
       if (!token) return;
@@ -63,27 +63,50 @@ const QueryForm = ({ onClose }) => {
     fetchInstitutes();
   }, [token]);
 
-  // ✅ Handle input change
+  // Handle input change
   const handleChange = (e) => {
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: value,
     });
+    // Clear error for this field
+    if (errors[name]) {
+      setErrors({
+        ...errors,
+        [name]: "",
+      });
+    }
   };
 
-  // ✅ Handle submit (real backend call)
-  const handleSubmit = async () => {
-    const { instituteName, querySubject, query } = formData;
+  // Validate form
+  const validateForm = () => {
+    const newErrors = {};
 
-    if (!instituteName || !querySubject || !query) {
-      alert("Please fill all required fields.");
+    if (!formData.instituteName) {
+      newErrors.instituteName = "Please select an institute";
+    }
+    if (!formData.querySubject) {
+      newErrors.querySubject = "Please select a query subject";
+    }
+    if (!formData.query.trim()) {
+      newErrors.query = "Please enter your query description";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  // Handle submit
+  const handleSubmit = async () => {
+    if (!validateForm()) {
       return;
     }
 
     const payload = {
-      querySubject,
-      query,
-      instituteName,
+      querySubject: formData.querySubject,
+      query: formData.query.trim(),
+      instituteName: formData.instituteName,
     };
 
     try {
@@ -101,11 +124,38 @@ const QueryForm = ({ onClose }) => {
 
       if (res.ok) {
         alert("✅ Query submitted successfully!");
+
+        try {
+          const leadRes = await fetch("http://localhost:8086/api/lead/create", {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ queryId: data?.queryId }),
+          });
+
+          if (leadRes.ok) {
+            console.log("✅ Lead created successfully for this query.");
+          } else {
+            console.error("❌ Failed to create lead entry.");
+            console.log(await leadRes.text());
+          }
+        } catch (leadErr) {
+          console.error("Error while creating lead:", leadErr);
+        }
+
+
+
+
+        // Reset form
         setFormData({
           instituteName: "",
           querySubject: "",
           query: "",
         });
+        // Close form and trigger refresh
+        onClose(true);
       } else {
         alert(`❌ ${data.message || "Error submitting query"}`);
       }
@@ -129,7 +179,7 @@ const QueryForm = ({ onClose }) => {
             </p>
           </div>
           <button
-            onClick={onClose}
+            onClick={() => onClose(false)}
             className="text-gray-500 hover:text-gray-700 text-sm font-medium"
           >
             Back to Queries
@@ -150,7 +200,8 @@ const QueryForm = ({ onClose }) => {
                 name="instituteName"
                 value={formData.instituteName}
                 onChange={handleChange}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 ${errors.instituteName ? 'border-red-500' : 'border-gray-300'
+                  }`}
               >
                 <option value="">Select an institute</option>
                 {instituteList.map((inst, idx) => (
@@ -159,6 +210,9 @@ const QueryForm = ({ onClose }) => {
                   </option>
                 ))}
               </select>
+              {errors.instituteName && (
+                <p className="mt-1 text-sm text-red-600">{errors.instituteName}</p>
+              )}
             </div>
 
             {/* Query Subject Dropdown */}
@@ -170,7 +224,8 @@ const QueryForm = ({ onClose }) => {
                 name="querySubject"
                 value={formData.querySubject}
                 onChange={handleChange}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 ${errors.querySubject ? 'border-red-500' : 'border-gray-300'
+                  }`}
               >
                 <option value="">Select a subject</option>
                 {querySubjects.map((subject, idx) => (
@@ -179,6 +234,9 @@ const QueryForm = ({ onClose }) => {
                   </option>
                 ))}
               </select>
+              {errors.querySubject && (
+                <p className="mt-1 text-sm text-red-600">{errors.querySubject}</p>
+              )}
             </div>
 
             {/* Query Description */}
@@ -191,19 +249,28 @@ const QueryForm = ({ onClose }) => {
                 value={formData.query}
                 onChange={handleChange}
                 rows="4"
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 ${errors.query ? 'border-red-500' : 'border-gray-300'
+                  }`}
                 placeholder="Describe your query in detail..."
               />
+              {errors.query && (
+                <p className="mt-1 text-sm text-red-600">{errors.query}</p>
+              )}
             </div>
 
             {/* Submit Button */}
-            <div className="flex justify-end">
+            <div className="flex justify-end space-x-3">
+              <button
+                onClick={() => onClose(false)}
+                className="px-6 py-3 border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
               <button
                 onClick={handleSubmit}
                 disabled={loading}
-                className={`${
-                  loading ? "bg-green-400" : "bg-green-500 hover:bg-green-600"
-                } text-white px-6 py-3 rounded-lg font-medium transition-colors inline-flex items-center space-x-2`}
+                className={`${loading ? "bg-green-400 cursor-not-allowed" : "bg-green-500 hover:bg-green-600"
+                  } text-white px-6 py-3 rounded-lg font-medium transition-colors inline-flex items-center space-x-2`}
               >
                 <Send className="w-5 h-5" />
                 <span>{loading ? "Submitting..." : "Submit Query"}</span>

@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    
+
     MessageSquare,
     Home,
     ClipboardList
@@ -20,13 +20,12 @@ const Sidebar = () => {
     return (
         <div className="w-80 bg-white shadow-lg flex flex-col flex-shrink-0 fixed h-full">
             <div className="p-6 border-b">
-                <div className="flex items-center space-x-3">
-                    <div className="bg-green-500 rounded-lg p-2">
-                        <span className="text-white font-bold text-lg">E</span>
-                    </div>
-                    <span className="text-xl font-bold text-gray-900">EduCRM</span>
+                <div className="flex flex-col items-start space-y-1">
+                    <span className="text-xl font-bold text-gray-900">Pravesh Path</span>
+                    <span className="text-sm text-gray-500">Step In, Stand Out</span>
                 </div>
             </div>
+
 
             <div className="flex-1 p-6 overflow-y-auto">
                 <div className="space-y-2">
