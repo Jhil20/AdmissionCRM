@@ -65,7 +65,7 @@ const QueriesDashboard = () => {
       {/* Sidebar */}
       <div className="fixed left-0 top-0 h-full z-20">
         <Sidebar />
-      </div> 
+      </div>
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0 ml-80">
