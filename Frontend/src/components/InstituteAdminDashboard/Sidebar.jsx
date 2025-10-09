@@ -21,11 +21,9 @@ const Sidebar = () => {
   return (
     <div className="w-80 bg-white shadow-lg flex flex-col flex-shrink-0 fixed h-full">
       <div className="p-6 border-b">
-        <div className="flex items-center space-x-3">
-          <div className="bg-green-500 rounded-lg p-2">
-            <span className="text-white font-bold text-lg">E</span>
-          </div>
-          <span className="text-xl font-bold text-gray-900">EduCRM</span>
+        <div className="flex flex-col items-start space-y-1">
+          <span className="text-xl font-bold text-gray-900">Pravesh Path</span>
+          <span className="text-sm text-gray-500">Step In, Stand Out</span>
         </div>
       </div>
 
@@ -37,9 +35,8 @@ const Sidebar = () => {
               <div
                 key={item.id}
                 onClick={() => navigate(item.route)}
-                className={`p-4 flex items-center space-x-3 rounded-lg cursor-pointer transition-colors ${
-                  isActive ? 'bg-green-500 text-white' : 'text-gray-600 hover:bg-gray-50'
-                }`}
+                className={`p-4 flex items-center space-x-3 rounded-lg cursor-pointer transition-colors ${isActive ? 'bg-green-500 text-white' : 'text-gray-600 hover:bg-gray-50'
+                  }`}
               >
                 <item.icon className="w-5 h-5" />
                 <span className="font-medium">{item.label}</span>

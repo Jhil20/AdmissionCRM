@@ -50,7 +50,7 @@ public class LeadService {
     @Autowired
     private CounsellorQueueService counsellorQueueService;
 
-    public LeadCreationRes createLead(LeadCreationReq leadCreationReq, String userId) {
+    public LeadCreationRes createLead(LeadCreationReq leadCreationReq, String userId) throws SchedulerException {
         try {
             Optional<AdmissionInquiry> inquiry = admissionInquiryRepo.findById(leadCreationReq.getApplicationInquiryId());
             if(inquiry.isEmpty()) {
@@ -63,6 +63,11 @@ public class LeadService {
                 if(query.isEmpty()) {
                     throw new ResourceNotFound("Query Not Found");
                 }
+            }
+
+            if(leadCreationReq.getApplicationInquiryId() == null)
+            {
+                leadCreationReq.setApplicationInquiryId(admissionInquiryRepo.findByUserId(userId).get(0).getId());
             }
 
             Lead lead = new Lead();
@@ -84,19 +89,19 @@ public class LeadService {
 
             scheduleQueueJob(savedLead);
             return response;
-        } catch (ResourceNotFound e) {
+        } catch (ResourceNotFound | SchedulerException e) {
             throw e;
         }
-        catch (DataAccessException e)
-        {
-            throw new LeadException("Lead creation Error");
-        }
-        catch(RuntimeException e)
-        {
-            throw new LeadException("Unexpected Lead creation Error");
-        } catch (SchedulerException e) {
-            throw new RuntimeException(e);
-        }
+//        catch (DataAccessException e)
+//        {
+//            throw new LeadException("Lead creation Error");
+//        }
+//        catch(RuntimeException e)
+//        {
+//            throw new LeadException("Unexpected Lead creation Error");
+//        } catch (SchedulerException e) {
+//            throw new RuntimeException(e);
+//        }
     }
 
     @Scheduled(fixedRate = 60000)

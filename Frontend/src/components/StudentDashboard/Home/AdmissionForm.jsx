@@ -1,10 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { User, X, MapPin, Globe, GraduationCap, Trophy, Award, ChevronRight, ChevronLeft, Check, Calendar, BookOpen } from "lucide-react";
+import { useSelector } from "react-redux";
 
 const AdmissionForm = () => {
-  const [selectedProgram, setSelectedProgram] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  // const [selectedProgram, setSelectedProgram] = useState("");
   const [selectedInstituteForm, setSelectedInstituteForm] = useState("");
   const [currentStep, setCurrentStep] = useState(0);
+  const [sampleInstitutes, setSampleInstitutes] = useState([]);
+  const [sampleCourses, setSampleCourses] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     firstName: '',
     middleName: '',
@@ -22,7 +27,8 @@ const AdmissionForm = () => {
     instituteId: '',
     courseName: '',
     courseId: '',
-    category: ''
+    category: '',
+    program: '',
   });
 
   const steps = [
@@ -52,20 +58,15 @@ const AdmissionForm = () => {
     }
   ];
 
-  // Sample institutes data
-  const sampleInstitutes = [
-    { id: "1", name: "IIT", fullName: "Indian Institute of Technology" },
-    { id: "2", name: "NIT", fullName: "National Institute of Technology" },
-    { id: "3", name: "IIIT", fullName: "Indian Institute of Information Technology" },
-    { id: "4", name: "GTU", fullName: "Gujarat Technological University" },
+  const categoryOptions = [
+    "ENGINEERING",
+    "PHARMACY",
+    "COMPUTER_APPLICATION",
+    "BUSINESS_MANAGEMENT",
+    "APPLIED_SCIENCE",
   ];
 
-  // Sample courses data
-  const sampleCourses = {
-    "UNDERGRADUATE": ["Computer Engineering", "Mechanical Engineering", "Civil Engineering", "Electrical Engineering"],
-    "POSTGRADUATE": ["M.Tech Computer Science", "M.Tech Mechanical", "MBA", "MCA"],
-    "PHD": ["PhD Computer Science", "PhD Mechanical Engineering", "PhD Electronics"]
-  };
+  const programOptions = ["UNDERGRADUATE", "POSTGRADUATE", "DIPLOMA", "PHD"];
 
   // Global location data
   const locationData = {
@@ -85,8 +86,82 @@ const AdmissionForm = () => {
 
   const countries = Object.keys(locationData);
   const genderOptions = ["MALE", "FEMALE", "OTHER"];
-  const programOptions = ["UNDERGRADUATE", "POSTGRADUATE", "PHD"];
-  const categoryOptions = ["ACPC", "MANAGEMENT", "NRI", "TFWS"];
+  const selector = useSelector((state) => state.authSlice.auth);
+  const token = selector?.userData?.jwtToken;
+
+  // Fetch institutions based on category and program
+  useEffect(() => {
+    const fetchInstitutions = async () => {
+      if (formData.program && formData.category) {
+        setLoading(true);
+        try {
+          // setLoadingInstitutes(true);
+
+          const response = await fetch(
+            `http://localhost:8000/api/institutions/filterInstitution?category=${formData.category}&program=${formData.program}`,
+            {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              }
+            }
+          );
+          const data = await response.json();
+          setSampleInstitutes(Array.isArray(data) ? data : []);
+        } catch (error) {
+          console.error("Error fetching institutions:", error);
+          setSampleInstitutes([]);
+        } finally {
+          setLoading(false);
+        }
+      } else {
+        setSampleInstitutes([]);
+      }
+    };
+
+    fetchInstitutions();
+  }, [formData.program, formData.category, token]);
+
+  // Fetch courses based on selected institute
+  useEffect(() => {
+    const fetchCourses = async () => {
+      if (formData.instituteId) {
+
+        try {
+          // setLoadingCourses(true);
+          const config = {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          };
+
+          const response = await fetch(
+            `http://localhost:8000/api/courses/institutions/${formData.instituteId}`,
+            {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          const data = await response.json();
+          setSampleCourses(Array.isArray(data) ? data : []);
+        } catch (error) {
+          console.error("Error fetching courses:", error);
+          setSampleCourses([]);
+        } finally {
+          setLoading(false);
+        }
+      } else {
+        setSampleCourses([]);
+      }
+    };
+
+    fetchCourses();
+  }, [formData.instituteId, token]);
 
   const getStatesForCountry = (country) => {
     return country ? Object.keys(locationData[country] || {}) : [];
@@ -118,9 +193,56 @@ const AdmissionForm = () => {
     }
   };
 
-  const handleSubmit = () => {
-    console.log("Form Data:", formData);
-    alert("Admission enquiry submitted successfully!");
+  const handleSubmit = async () => {
+    // setLoading(true);
+    try {
+      const response = await fetch('http://localhost:8086/api/Admission-Inquiry/create', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log("Form Data:", result);
+        alert("Admission enquiry submitted successfully!");
+        // Reset form after successful submission
+        setCurrentStep(0);
+        setFormData({
+          firstName: '',
+          middleName: '',
+          lastName: '',
+          city: '',
+          state: '',
+          country: '',
+          gender: '',
+          dob: '',
+          gujcetMarks: '',
+          gujcetPercentileRank: '',
+          acpcRank: '',
+          twelfthPercentileRank: '',
+          instituteName: '',
+          instituteId: '',
+          courseName: '',
+          courseId: '',
+          category: '',
+          program: '',
+        });
+        // setSelectedProgram("");
+        setSelectedInstituteForm("");
+      } else {
+        const error = await response.json();
+        console.error("Error submitting form:", error);
+        alert(error.error);
+      }
+    } catch (error) { 
+      alert(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleClose = () => {
@@ -143,9 +265,10 @@ const AdmissionForm = () => {
         instituteId: '',
         courseName: '',
         courseId: '',
-        category: ''
+        category: '',
+        program: '',
       });
-      setSelectedProgram("");
+      // setSelectedProgram("");
       setSelectedInstituteForm("");
     }
   };
@@ -158,7 +281,7 @@ const AdmissionForm = () => {
     } else if (currentStep === 2) {
       return formData.gujcetMarks && formData.gujcetPercentileRank && formData.twelfthPercentileRank;
     } else if (currentStep === 3) {
-      return selectedProgram && formData.instituteName && formData.courseName && formData.category;
+      return formData.program && formData.instituteName && formData.courseName && formData.category;
     }
     return true;
   };
@@ -408,11 +531,14 @@ const AdmissionForm = () => {
                     Program <span className="text-red-500">*</span>
                   </label>
                   <select
-                    value={selectedProgram}
+                    value={formData.program}
                     onChange={(e) => {
-                      setSelectedProgram(e.target.value);
+                      handleInputChange('program', e.target.value);
                       setSelectedInstituteForm("");
+                      handleInputChange('instituteName', '');
+                      handleInputChange('instituteId', '');
                       handleInputChange('courseName', '');
+                      handleInputChange('courseId', '');
                     }}
                     className={selectClasses}
                   >
@@ -431,7 +557,14 @@ const AdmissionForm = () => {
                   </label>
                   <select
                     value={formData.category}
-                    onChange={(e) => handleInputChange('category', e.target.value)}
+                    onChange={(e) => {
+                      handleInputChange('category', e.target.value);
+                      setSelectedInstituteForm("");
+                      handleInputChange('instituteName', '');
+                      handleInputChange('instituteId', '');
+                      handleInputChange('courseName', '');
+                      handleInputChange('courseId', '');
+                    }}
                     className={selectClasses}
                   >
                     <option value="">Select category</option>
@@ -440,7 +573,6 @@ const AdmissionForm = () => {
                     ))}
                   </select>
                 </div>
-
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-1">
                     Institute <span className="text-red-500">*</span>
@@ -450,23 +582,38 @@ const AdmissionForm = () => {
                     <select
                       value={formData.instituteName}
                       onChange={(e) => {
-                        const selectedInstitute = sampleInstitutes?.find(inst => inst.name === e.target.value);
-                        handleInputChange('instituteName', e.target.value);
-                        handleInputChange('instituteId', selectedInstitute?.id || '');
+                        const selectedInstitute = sampleInstitutes?.find(
+                          (inst) => inst.instituteName === e.target.value
+                        );
+
+                        handleInputChange("instituteName", e.target.value);
+                        handleInputChange("instituteId", selectedInstitute?.id || "");
                         setSelectedInstituteForm(e.target.value);
-                        handleInputChange('courseName', '');
+
+                        // Reset dependent fields
+                        handleInputChange("courseName", "");
+                        handleInputChange("courseId", "");
                       }}
-                      className={`${selectClasses} pl-8`}
+                      disabled={!formData.program || !formData.category || loading}
+                      className={`${selectClasses} pl-8 ${!formData.program || !formData.category || loading
+                          ? "opacity-50 cursor-not-allowed"
+                          : ""
+                        }`}
                     >
                       <option value="">Choose institute</option>
-                      {sampleInstitutes.map((institute) => (
-                        <option key={institute.id} value={institute.name}>
-                          {institute.name} - {institute.fullName}
-                        </option>
-                      ))}
+                      {loading ? (
+                        <option value="">Loading...</option>
+                      ) : (
+                        sampleInstitutes.map((institute) => (
+                          <option key={institute.id} value={institute.instituteName}>
+                            {institute.instituteName}
+                          </option>
+                        ))
+                      )}
                     </select>
                   </div>
                 </div>
+
 
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-1">
@@ -475,16 +622,23 @@ const AdmissionForm = () => {
                   <select
                     value={formData.courseName}
                     onChange={(e) => {
+                      const selectedCourse = sampleCourses?.find(course => course.name === e.target.value);
                       handleInputChange('courseName', e.target.value);
-                      handleInputChange('courseId', e.target.value);
+                      handleInputChange('courseId', selectedCourse?.id || e.target.value);
                     }}
-                    disabled={!selectedProgram}
-                    className={`${selectClasses} ${!selectedProgram ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    disabled={!formData.instituteId || loading}
+                    className={`${selectClasses} ${(!formData.instituteId || loading) ? 'opacity-50 cursor-not-allowed' : ''}`}
                   >
                     <option value="">Select course</option>
-                    {selectedProgram && sampleCourses[selectedProgram]?.map((course) => (
-                      <option key={course} value={course}>{course}</option>
-                    ))}
+                    {loading ? (
+                      <option value="">Loading...</option>
+                    ) : (
+                      sampleCourses.map((course) => (
+                        <option key={course.id} value={course.name}>
+                          {course.name}
+                        </option>
+                      ))
+                    )}
                   </select>
                 </div>
               </div>
@@ -497,10 +651,10 @@ const AdmissionForm = () => {
 
   return (
     <div className="fixed top-20 left-100 w-[calc(100%-26rem)] h-[calc(100vh-5rem)] bg-transparent overflow-hidden">
-
       <div className="h-full flex flex-col p-4 relative">
         {/* Close Button */}
         <button
+          onClick={handleClose}
           className="absolute top-6 right-6 text-gray-400 hover:text-gray-700 transition-colors duration-200"
           aria-label="Close"
         >
@@ -569,13 +723,13 @@ const AdmissionForm = () => {
             {currentStep === steps.length - 1 ? (
               <button
                 onClick={handleSubmit}
-                disabled={!isStepValid()}
-                className={`flex items-center px-4 py-2 rounded-lg font-semibold transition-all duration-200 text-sm ${isStepValid()
+                disabled={!isStepValid() || loading}
+                className={`flex items-center px-4 py-2 rounded-lg font-semibold transition-all duration-200 text-sm ${isStepValid() && !loading
                   ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:from-green-600 hover:to-emerald-700 shadow-lg'
                   : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                   }`}
               >
-                Submit Application
+                {loading ? 'Submitting...' : 'Submit Application'}
                 <Trophy className="w-4 h-4 ml-1" />
               </button>
             ) : (

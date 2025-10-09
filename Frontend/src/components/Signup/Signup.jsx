@@ -78,7 +78,7 @@ export default function Signup({ onSignup }) {
           <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight text-white">
             Join
             <br />
-            <span className="text-emerald-100">EduCRM</span>
+            <span className="text-emerald-100">Pravesh Path</span>
             <br />
             <span className="text-teal-100">Community</span>
           </h1>
@@ -109,7 +109,7 @@ export default function Signup({ onSignup }) {
 
         {/* Footer - Fixed Position */}
         <div className="absolute bottom-6 left-8 text-white/60 text-sm">
-          © 2025 EduCRM. All rights reserved.
+          © 2025 Pravesh Path. All rights reserved.
         </div>
       </div>
 

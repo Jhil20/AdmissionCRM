@@ -34,9 +34,9 @@ function Header() {
             </div>
             <div>
               <h1 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
-                EduCRM
+                Pravesh Path
               </h1>
-              <p className="text-xs text-gray-500 font-medium">Admission Suite</p>
+              <p className="text-xs text-gray-500 font-medium">Step In, Stand Out</p>
             </div>
           </div>
           
