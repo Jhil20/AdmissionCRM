@@ -28,10 +28,10 @@ public class LeadController {
 
     @PostMapping("/create")
     @PreAuthorize("hasRole('STUDENT')")
-    public ResponseEntity<?> createLead(@RequestBody LeadCreationReq leadCreationReq, HttpServletRequest request) {
+    public ResponseEntity<?> createLead(@RequestBody LeadCreationReq leadCreationReq, HttpServletRequest request,@RequestHeader("Authorization") String token) {
         try {
             String userId = (String) request.getAttribute("userId");
-            LeadCreationRes response = leadService.createLead(leadCreationReq,userId);
+            LeadCreationRes response = leadService.createLead(leadCreationReq,userId,token);
             SuccessResponse successResponse = new SuccessResponse(
                     LocalDateTime.now(),
                     HttpStatus.OK.value(),

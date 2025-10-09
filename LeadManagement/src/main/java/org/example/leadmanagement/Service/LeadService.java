@@ -50,53 +50,136 @@ public class LeadService {
     @Autowired
     private CounsellorQueueService counsellorQueueService;
 
-    public LeadCreationRes createLead(LeadCreationReq leadCreationReq, String userId) {
+    public LeadCreationRes createLead(LeadCreationReq leadCreationReq, String userId,String token) {
         try {
-            Optional<AdmissionInquiry> inquiry = admissionInquiryRepo.findById(leadCreationReq.getApplicationInquiryId());
-            if(inquiry.isEmpty()) {
-                throw new ResourceNotFound("Inquiry Not Found");
-            }
-            Optional<Query> query = Optional.empty();
-            if (leadCreationReq.getQueryId() != null)
+            UserResponse user = authenticationServiceClient.fetchUser(userId,token);
+            if(user==null)
             {
-                query = queryRepo.findById(leadCreationReq.getQueryId());
-                if(query.isEmpty()) {
-                    throw new ResourceNotFound("Query Not Found");
+                throw new ResourceNotFound(
+                        "No User exist"
+                );
+            }
+            if((leadCreationReq.getQueryId() == null) && (leadCreationReq.getApplicationInquiryId() != null ))
+            {
+                Optional<AdmissionInquiry> inquiry =
+                        admissionInquiryRepo.findById(leadCreationReq.getApplicationInquiryId());
+                if(inquiry.isEmpty())
+                {
+                    throw new ResourceNotFound("No Application Inquiry exist");
+                }
+                Lead lead = new Lead();
+                lead.setLeadStatus(LeadStatus.NEW);
+                lead.setUserId(userId);
+
+                lead.setAdmissionInquiry(inquiry.get());
+                inquiry.get().getLeads().add(lead);
+
+                Lead savedLead =
+                        leadRepo.save(lead);
+                admissionInquiryRepo.save(inquiry.get());
+
+                LeadCreationRes response = new LeadCreationRes();
+                response.setLeadStatus(savedLead.getLeadStatus());
+                response.setLeadTrackingId(savedLead.getReferenceId());
+                scheduleQueueJob(savedLead);
+                return response;
+
+
+            } else if ((leadCreationReq.getQueryId() != null ) && (leadCreationReq.getApplicationInquiryId() == null)) {
+                Optional<Query> query =
+                        queryRepo.findById(leadCreationReq.getQueryId());
+                if (query.isEmpty())
+                {
+                    throw new ResourceNotFound("No Query exist");
+                }
+                AdmissionInquiry inquiry =
+                        query.get().getAdmissionInquiry();
+                leadCreationReq.setApplicationInquiryId(inquiry.getId());
+
+                if(leadRepo.existsByAdmissionInquiry(inquiry))
+                {
+                    Lead existedLead =
+                            leadRepo.findByAdmissionInquiry(inquiry);
+                    if(existedLead.getLeadStatus() != LeadStatus.SOLVED && existedLead.getQuery() == null)
+                    {
+                        System.out.println(
+                                "existed id : "+ existedLead.getId());
+                        existedLead.setQuery(query.get());
+                        existedLead.setReferenceId(existedLead.getReferenceId());
+                        Lead savedLead =
+                                leadRepo.save(existedLead);
+
+                        LeadCreationRes response = new LeadCreationRes();
+                        response.setLeadStatus(savedLead.getLeadStatus());
+                        response.setLeadTrackingId(savedLead.getReferenceId());
+                        return response;
+                    }
+                    else
+                    {
+                        return getLeadCreationRes(userId, query, inquiry);
+                    }
+                }
+                else
+                {
+                    return getLeadCreationRes(userId, query, inquiry);
                 }
             }
+            else
+            {
+                Optional<Query> query =
+                        queryRepo.findById(leadCreationReq.getQueryId());
+                if(query.isEmpty())
+                {
+                    throw new ResourceNotFound("No Query exist");
+                }
 
-            Lead lead = new Lead();
-            lead.setLeadStatus(LeadStatus.NEW);
-            lead.setAdmissionInquiry(inquiry.get());
-            query.ifPresent(lead::setQuery);
-            lead.setUserId(userId);
+                Optional<AdmissionInquiry> inquiry = admissionInquiryRepo.findById(leadCreationReq.getApplicationInquiryId());
+                if (inquiry.isEmpty())
+                {
+                    throw new ResourceNotFound(
+                            "Admission inquiry " +
+                                    "not exist");
+                }
+                return getLeadCreationRes(userId,query,inquiry.get());
 
-            inquiry.get().getLeads().add(lead);
-            query.ifPresent(value -> value.getLead().add(lead));
-
-            admissionInquiryRepo.save(inquiry.get());
-            query.ifPresent(value -> queryRepo.save(value));
-            Lead savedLead = leadRepo.save(lead);
-
-            LeadCreationRes response = new LeadCreationRes();
-            response.setLeadTrackingId(savedLead.getReferenceId());
-            response.setLeadStatus(savedLead.getLeadStatus());
-
-            scheduleQueueJob(savedLead);
-            return response;
+            }
         } catch (ResourceNotFound e) {
             throw e;
         }
-        catch (DataAccessException e)
-        {
-            throw new LeadException("Lead creation Error");
-        }
-        catch(RuntimeException e)
-        {
-            throw new LeadException("Unexpected Lead creation Error");
-        } catch (SchedulerException e) {
+//        catch (DataAccessException e)
+//        {
+//            throw new LeadException("Lead creation Error");
+//        }
+//        catch(RuntimeException e)
+//        {
+//            throw new LeadException("Unexpected Lead creation Error");
+//        }
+        catch (SchedulerException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private LeadCreationRes getLeadCreationRes(String userId, Optional<Query> query, AdmissionInquiry inquiry) throws SchedulerException {
+        Lead lead = new Lead();
+        lead.setLeadStatus(LeadStatus.NEW);
+        lead.setUserId(userId);
+
+        lead.setAdmissionInquiry(inquiry);
+        lead.setQuery(query.get());
+
+        inquiry.getLeads().add(lead);
+        query.get().getLead().add(lead);
+
+        Lead savedLead =
+                leadRepo.save(lead);
+        admissionInquiryRepo.save(inquiry);
+        queryRepo.save(query.get());
+
+        LeadCreationRes response = new LeadCreationRes();
+        response.setLeadStatus(savedLead.getLeadStatus());
+        response.setLeadTrackingId(savedLead.getReferenceId());
+        scheduleQueueJob(savedLead);
+        return response;
     }
 
     @Scheduled(fixedRate = 60000)

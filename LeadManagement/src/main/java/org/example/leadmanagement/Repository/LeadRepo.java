@@ -1,5 +1,6 @@
 package org.example.leadmanagement.Repository;
 
+import org.example.leadmanagement.Entities.Leads.AdmissionInquiry;
 import org.example.leadmanagement.Entities.Leads.Lead;
 import org.example.leadmanagement.Enum.LeadStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,4 +17,8 @@ public interface LeadRepo extends JpaRepository<Lead, String> {
     Optional<Lead> findByReferenceId(String referenceId);
 
     List<Lead> findByUserId(String userId);
+
+    boolean existsByAdmissionInquiry(AdmissionInquiry admissionInquiry);
+
+    Lead findByAdmissionInquiry(AdmissionInquiry admissionInquiry);
 }
