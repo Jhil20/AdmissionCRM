@@ -48,8 +48,6 @@ public class LeadController {
                     e.getMessage()
             );
             return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
-        } catch (SchedulerException e) {
-            throw new RuntimeException(e);
         }
 
     }
