@@ -50,11 +50,11 @@ public class InternalController {
             return ResponseEntity.ok(internalService.getUserFromId(userId));
         }
         catch (DataAccessException e){
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.internalServerError().body(e.getMessage());
         }
-        catch(RuntimeException e){
-            return ResponseEntity.internalServerError().build();
-        }
+//        catch(RuntimeException e){
+//            return ResponseEntity.internalServerError().build();
+//        }
     }
 
     @GetMapping("/counsellors")

@@ -114,7 +114,9 @@ public class InternalService {
 
     public UserResponse getUserFromId(String userId)
     {
+
         Optional<User> existedUser = userRepository.findById(userId);
+        System.out.print(existedUser.get().getId());
         if(existedUser.isEmpty())
         {
             throw new ResourceNotFoundException("Can't find user " + userId);

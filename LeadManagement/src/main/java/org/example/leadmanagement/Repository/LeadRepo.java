@@ -14,4 +14,6 @@ public interface LeadRepo extends JpaRepository<Lead, String> {
     List<Lead> findByLeadStatusOrderByCreatedAt(LeadStatus leadStatus);
 
     Optional<Lead> findByReferenceId(String referenceId);
+
+    List<Lead> findByUserId(String userId);
 }
