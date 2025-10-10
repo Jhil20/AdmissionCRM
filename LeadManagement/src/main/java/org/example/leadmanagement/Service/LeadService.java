@@ -263,8 +263,12 @@ public class LeadService {
                 leadResponse.setDate(lead.getUpdatedAt());
                 leadResponse.setLeadId(lead.getReferenceId());
                 leadResponse.setLeadStatus(lead.getLeadStatus().toString());
-                UserResponse assignedCounsellor = authenticationServiceClient.fetchUser(lead.getAssignedTo(),token);
-                leadResponse.setAssignedTo(assignedCounsellor.getFirstName() + " " + assignedCounsellor.getLastName());
+                if(lead.getAssignedTo() != null)
+                {
+                    UserResponse assignedCounsellor = authenticationServiceClient.fetchUser(lead.getAssignedTo(),token);
+                    leadResponse.setAssignedTo(assignedCounsellor.getFirstName() + " " + assignedCounsellor.getLastName());
+                }
+
 
 
                 if(lead.getQuery() != null && lead.getAdmissionInquiry() != null)

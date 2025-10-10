@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Send } from "lucide-react";
 import { useSelector } from "react-redux";
+import SubmissionSuccess
+    from "../SubmissionSuccess.jsx";
 
 const querySubjects = [
   "ADMISSION_PROCESS",
@@ -25,7 +27,7 @@ const querySubjects = [
   "ALUMNI_NETWORK",
 ];
 
-const QueryForm = ({ onClose }) => {
+const QueryForm = ({ onClose,admissionInquiryId }) => {
   const [formData, setFormData] = useState({
     instituteName: "",
     querySubject: "",
@@ -35,6 +37,8 @@ const QueryForm = ({ onClose }) => {
   const [instituteList, setInstituteList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+    const [showSuccess, setShowSuccess] = useState(false);
+    const [leadId, setLeadId] = useState('');
 
   const selector = useSelector((state) => state.authSlice.auth);
   const token = selector?.userData?.jwtToken;
@@ -98,74 +102,94 @@ const QueryForm = ({ onClose }) => {
   };
 
   // Handle submit
-  const handleSubmit = async () => {
-    if (!validateForm()) {
-      return;
-    }
-
-    const payload = {
-      querySubject: formData.querySubject,
-      query: formData.query.trim(),
-      instituteName: formData.instituteName,
-    };
-
-    try {
-      setLoading(true);
-      const res = await fetch("http://localhost:8086/api/query/create", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      const data = await res.json();
-
-      if (res.ok) {
-        alert("✅ Query submitted successfully!");
-
-        try {
-          const leadRes = await fetch("http://localhost:8086/api/lead/create", {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ queryId: data?.queryId }),
-          });
-
-          if (leadRes.ok) {
-            console.log("✅ Lead created successfully for this query.");
-          } else {
-            console.error("❌ Failed to create lead entry.");
-            console.log(await leadRes.text());
-          }
-        } catch (leadErr) {
-          console.error("Error while creating lead:", leadErr);
+    const handleSubmit = async () => {
+        if (!validateForm()) {
+            return;
         }
 
+        const payload = {
+            querySubject: formData.querySubject,
+            query: formData.query.trim(),
+            instituteName: formData.instituteName,
+        };
 
+        try {
+            setLoading(true);
+            const res = await fetch("http://localhost:8086/api/query/create", {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(payload),
+            });
 
+            const data = await res.json();
 
-        // Reset form
-        setFormData({
-          instituteName: "",
-          querySubject: "",
-          query: "",
-        });
-        // Close form and trigger refresh
-        onClose(true);
-      } else {
-        alert(`❌ ${data.message || "Error submitting query"}`);
-      }
-    } catch (err) {
-      console.error("Error:", err);
-      alert("❌ Network error while submitting query.");
-    } finally {
-      setLoading(false);
+            if (res.ok) {
+                try {
+                    console.log("queryid", data.data.queryId);
+                    const leadRes = await fetch("http://localhost:8086/api/lead/create", {
+                        method: "POST",
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            applicationInquiryId: admissionInquiryId || null,
+                            queryId: data.data.queryId || null
+                        }),
+                    });
+
+                    if (leadRes.ok) {
+                        const leadData = await leadRes.json();
+                        console.log("✅ Lead created successfully for this query.");
+
+                        // Show success component with lead ID
+                        console.log(leadData.data.Lead.leadTrackingId)
+                        setLeadId(leadData.data.Lead.leadTrackingId); // Adjust based on your API response structure
+                        setShowSuccess(true);
+
+                    } else {
+                        console.error("❌ Failed to create lead entry.");
+                        console.log(await leadRes.text());
+                    }
+                } catch (leadErr) {
+                    console.error("Error while creating lead:", leadErr);
+                }
+
+                // Reset form
+                setFormData({
+                    instituteName: "",
+                    querySubject: "",
+                    query: "",
+                });
+            } else {
+                alert(`❌ ${data.message || "Error submitting query"}`);
+            }
+        } catch (err) {
+            console.error("Error:", err);
+            alert("❌ Network error while submitting query.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleSubmitAnother = () => {
+        setShowSuccess(false);
+        setLeadId(null);
+        // Optionally reset form or navigate back
+    };
+
+    // Show success screen if submission was successful
+    if (showSuccess) {
+        return (
+            <SubmissionSuccess
+                leadId={leadId}
+                onSubmitAnother={handleSubmitAnother}
+            />
+        );
     }
-  };
 
   return (
     <div className="flex-1 bg-gray-50 overflow-auto">

@@ -4,7 +4,7 @@ import Sidebar from "../Sidebar";
 import Header from "../Header";
 import InstituteCards from "./InstituteCards";
 import InstituteDetails from "./InstituteDetails";
-import AdmissionForm from "./AdmissionForm";
+import AdmissionFlowContainer from "./AdmissionFlowContainer"
 
 const StudentDashboard = () => {
   const [showAdmissionForm, setShowAdmissionForm] = useState(false);
@@ -75,15 +75,16 @@ useEffect(() => {
         {/* Scrollable Page Content */}
         <div className="flex-1 overflow-auto mt-[4.5rem] p-6">
           {showAdmissionForm ? (
-            <AdmissionForm
-              institutes={institutes}
-              selectedProgram={selectedProgram}
-              setSelectedProgram={setSelectedProgram}
-              selectedInstituteForm={selectedInstituteForm}
-              setSelectedInstituteForm={setSelectedInstituteForm}
-              getCoursesForInstitute={getCoursesForInstitute}
-              setShowAdmissionForm={setShowAdmissionForm}
-            />
+              <AdmissionFlowContainer/>
+            // <AdmissionForm
+            //   // institutes={institutes}
+            //   // selectedProgram={selectedProgram}
+            //   // setSelectedProgram={setSelectedProgram}
+            //   // selectedInstituteForm={selectedInstituteForm}
+            //   // setSelectedInstituteForm={setSelectedInstituteForm}
+            //   // getCoursesForInstitute={getCoursesForInstitute}
+            //   // setShowAdmissionForm={setShowAdmissionForm}
+            // />
           ) : selectedInstitute ? (
             <InstituteDetails
               institute={selectedInstitute}
