@@ -6,8 +6,8 @@ import lombok.*;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class InstituteAdminResponseDTO {
-    private String firstname;
-    private String lastname;
+    private String firstName;
+    private String lastName;
     private String mobileNumber;
     private String username;
     private String email;
@@ -17,9 +17,9 @@ public class InstituteAdminResponseDTO {
     private String alternateEmail;
     private String designation;
 
-    public InstituteAdminResponseDTO(boolean isActive,String firstname, String lastname, String username, String email, String mobileNumber, String alternateEmail, String designation, String instituteName) {
-        this.firstname = firstname;
-        this.lastname = lastname;
+    public InstituteAdminResponseDTO(boolean isActive,String firstName, String lastName, String username, String email, String mobileNumber, String alternateEmail, String designation, String instituteName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.mobileNumber = mobileNumber;
         this.username = username;
         this.email = email;
@@ -29,9 +29,9 @@ public class InstituteAdminResponseDTO {
         this.isActive = isActive;
     }
 
-    public InstituteAdminResponseDTO(String firstname, String lastname, String mobileNumber, String username, String email, boolean isActive, String role, String instituteName, String alternateEmail, String designation) {
-        this.firstname = firstname;
-        this.lastname = lastname;
+    public InstituteAdminResponseDTO(String firstName, String lastName, String mobileNumber, String username, String email, boolean isActive, String role, String instituteName, String alternateEmail, String designation) {
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.mobileNumber = mobileNumber;
         this.username = username;
         this.email = email;
@@ -85,20 +85,21 @@ public class InstituteAdminResponseDTO {
         this.username = username;
     }
 
-    public String getFirstname() {
-        return firstname;
+
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public String getLastname() {
-        return lastname;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getInstituteName() {

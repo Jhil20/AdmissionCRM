@@ -16,8 +16,8 @@ const Sidebar = () => {
     { id: 'analytics', icon: BarChart3, label: 'Analytics Dashboard', route: '/superadmin/dashboard' },
     { id: 'users', icon: Users, label: 'User Management', route: '/superadmin/user-management' },
     { id: 'institutes', icon: Building2, label: 'Institute Management', route: '/superadmin/institute-management' },
-    { id: 'faculty', icon: GraduationCap, label: 'Faculty Management', route: '/superadmin/faculty-management' },
-    { id: 'messages', icon: MessageSquare, label: 'Message Templates', route: '/superadmin/message-templates' }
+    // { id: 'faculty', icon: GraduationCap, label: 'Faculty Management', route: '/superadmin/faculty-management' },
+    // { id: 'messages', icon: MessageSquare, label: 'Message Templates', route: '/superadmin/message-templates' }
   ];
 
   return (

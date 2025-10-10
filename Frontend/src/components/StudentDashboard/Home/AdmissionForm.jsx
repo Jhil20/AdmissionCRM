@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { User, X, MapPin, Globe, GraduationCap, Trophy, Award, ChevronRight, ChevronLeft, Check, Calendar, BookOpen } from "lucide-react";
 import { useSelector } from "react-redux";
+import { ToastContainer, useToast } from "../../Toast/ToastSystem";
 
 const AdmissionForm = () => {
   const [selectedCategory, setSelectedCategory] = useState("");
-  // const [selectedProgram, setSelectedProgram] = useState("");
+  
   const [selectedInstituteForm, setSelectedInstituteForm] = useState("");
   const [currentStep, setCurrentStep] = useState(0);
   const [sampleInstitutes, setSampleInstitutes] = useState([]);
   const [sampleCourses, setSampleCourses] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  const {toasts, removeToast, showSuccess, showError, showWarning } = useToast();
+
   const [formData, setFormData] = useState({
     firstName: '',
     middleName: '',
@@ -110,7 +114,8 @@ const AdmissionForm = () => {
           const data = await response.json();
           setSampleInstitutes(Array.isArray(data) ? data : []);
         } catch (error) {
-          console.error("Error fetching institutions:", error);
+          // console.error("Error fetching institutions:", error);
+          showError(error.error || "Error fetching institutions");
           setSampleInstitutes([]);
         } finally {
           setLoading(false);
@@ -150,7 +155,8 @@ const AdmissionForm = () => {
           const data = await response.json();
           setSampleCourses(Array.isArray(data) ? data : []);
         } catch (error) {
-          console.error("Error fetching courses:", error);
+          // console.error("Error fetching courses:", error);
+          showError(error.error || "Error fetching courses");
           setSampleCourses([]);
         } finally {
           setLoading(false);
@@ -208,7 +214,8 @@ const AdmissionForm = () => {
       if (response.ok) {
         const result = await response.json();
         console.log("Form Data:", result);
-        alert("Admission enquiry submitted successfully!");
+        // alert("Admission enquiry submitted successfully!");
+        showSuccess("Admission enquiry submitted successfully!");
         // Reset form after successful submission
         setCurrentStep(0);
         setFormData({
@@ -236,10 +243,11 @@ const AdmissionForm = () => {
       } else {
         const error = await response.json();
         console.error("Error submitting form:", error);
-        alert(error.error);
+        showWarning(error.error || "Error submitting form");
+        // alert(error.error);
       }
-    } catch (error) { 
-      alert(err);
+    } catch (error) {
+      showWarning(error.error);
     } finally {
       setLoading(false);
     }
@@ -748,7 +756,9 @@ const AdmissionForm = () => {
           </div>
         </div>
       </div>
+       <ToastContainer toasts={toasts} removeToast={removeToast} />
     </div>
+   
   );
 };
 
