@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { MessageSquare, Plus, Eye, Users, Calendar, ArrowLeft } from 'lucide-react';
 import { useSelector } from 'react-redux';
+import QueryHeader from './QueryHeader'; // Import the new header component
 
 const ListQueries = ({ onAskQuery }) => {
   const [queries, setQueries] = useState([]);
@@ -92,22 +93,20 @@ const ListQueries = ({ onAskQuery }) => {
   if (selectedQuery) {
     return (
       <div className="flex-1 bg-gray-50 overflow-auto">
-        <div className="bg-white border-b border-gray-200">
-          <div className="flex items-center justify-between p-6">
-            <div className="flex items-center space-x-4">
-              <button
-                onClick={() => setSelectedQuery(null)}
-                className="text-gray-500 hover:text-gray-700"
-              >
-                <ArrowLeft className="w-5 h-5" />
-              </button>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">Query Details</h1>
-                <p className="text-gray-600 mt-1">View detailed information about the query</p>
-              </div>
-            </div>
-          </div>
-        </div>
+       <div className="flex items-start justify-between p-6 bg-transparent">
+  <div className="flex items-start space-x-4">
+    <button
+      onClick={() => setSelectedQuery(null)}
+      className="text-gray-500 hover:text-gray-700 mt-1"
+    >
+      <ArrowLeft className="w-5 h-5" />
+    </button>
+    <div className="flex flex-col items-start">
+      <h2 className="text-2xl font-bold text-green-600">Query Details</h2>
+      <p className="text-gray-600 mt-1">View detailed information about the query</p>
+    </div>
+  </div>
+</div>
 
         <div className="p-6">
           <div className="max-w-4xl bg-white rounded-lg shadow-sm border border-gray-200">
@@ -206,15 +205,8 @@ const ListQueries = ({ onAskQuery }) => {
 
   if (loading) {
     return (
-      <div className="flex-1 bg-gray-50 overflow-auto">
-        <div className="bg-white border-b border-gray-200">
-          <div className="flex items-center justify-between p-6">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">Queries</h1>
-              <p className="text-gray-600 mt-1">Manage your course and admission queries</p>
-            </div>
-          </div>
-        </div>
+      <div className="flex-1 bg-gray-50 overflow-auto p-6">
+        <QueryHeader onAddQuery={onAskQuery} />
         <div className="flex items-center justify-center min-h-[calc(100vh-200px)]">
           <p className="text-gray-600 text-lg">Loading queries...</p>
         </div>
@@ -223,97 +215,89 @@ const ListQueries = ({ onAskQuery }) => {
   }
 
   return (
-    <div className="flex-1 bg-gray-50 overflow-auto">
-      <div className="bg-white border-b border-gray-200">
-        <div className="flex items-center justify-between p-6">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">Queries</h1>
-            <p className="text-gray-600 mt-1">Manage your course and admission queries</p>
+    <div className="flex-1 bg-gray-50 overflow-auto p-6">
+      {/* Header matching User Management style */}
+      <QueryHeader onAddQuery={onAskQuery} />
+
+      {/* Table matching User Management style */}
+      <div className="bg-white rounded-lg shadow overflow-hidden">
+        {queries.length === 0 ? (
+          <div className="text-center py-16 px-6">
+            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <MessageSquare className="w-8 h-8 text-gray-400" />
+            </div>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">No Queries Yet</h3>
+            <p className="text-gray-600 mb-6">You haven't submitted any queries yet.</p>
+            <button
+              onClick={onAskQuery}
+              className="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-medium transition-colors inline-flex items-center space-x-2"
+            >
+              <Plus className="w-5 h-5" />
+              <span>Ask Your First Query</span>
+            </button>
           </div>
-          <button
-            onClick={onAskQuery}
-            className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-medium transition-colors inline-flex items-center space-x-2"
-          >
-            <Plus className="w-5 h-5" />
-            <span>Ask Query</span>
-          </button>
-        </div>
-      </div>
+        ) : (
+          <table className="w-full">
+            <thead className="bg-gray-50 border-b">
+              <tr>
+                <th className="text-left px-6 py-4 text-sm font-medium text-gray-700 uppercase tracking-wider">SUBJECT</th>
+                <th className="text-left px-6 py-4 text-sm font-medium text-gray-700 uppercase tracking-wider">ASSIGNED TO</th>
+                <th className="text-left px-6 py-4 text-sm font-medium text-gray-700 uppercase tracking-wider">INSTITUTE</th>
+                <th className="text-left px-6 py-4 text-sm font-medium text-gray-700 uppercase tracking-wider">DATE</th>
+                <th className="text-left px-6 py-4 text-sm font-medium text-gray-700 uppercase tracking-wider">STATUS</th>
+                <th className="text-left px-6 py-4 text-sm font-medium text-gray-700 uppercase tracking-wider">ACTIONS</th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {queries.map((query) => (
+                <tr key={query.id} className="hover:bg-gray-50">
+                  <td className="px-6 py-4 align-top text-left">
+                    <div className="text-sm font-medium text-gray-900">
+                      {truncateText(query.leadSubject?.replace(/_/g, ' '), 4)}
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      {truncateText(query.leadDescription, 5)}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-900">
+                    {query.assignedTo || 'Pending'}
+                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-900">
+                    {query.instituteName || 'N/A'}
+                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-900">
+                    {formatDate(query.date)}
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className={`inline-flex px-3 py-1 text-xs font-medium rounded-full ${getStatusColor(query.leadStatus)}`}>
+                      {formatStatus(query.leadStatus)}
+                    </span>
+                  </td>
+                  {/* <td className="px-6 py-4">
+                    <div className="flex items-center space-x-3">
+                      <button
+                        onClick={() => setSelectedQuery(query)}
+                        className="text-green-600 hover:text-green-800 transition-colors"
+                      >
+                        <Eye className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </td> */}
+                  <td className="px-6 py-4 text-left">
+                    <button
+                      onClick={() => setSelectedQuery(query)}
+                      className="flex items-center gap-2 text-green-600 hover:text-green-800 font-medium"
+                    >
+                      <span>View</span>
+                      <Eye className="w-4 h-4" />
+                    </button>
+                  </td>
 
-      <div className="p-6">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-          {queries.length === 0 ? (
-            <div className="text-center py-16 px-6">
-              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <MessageSquare className="w-8 h-8 text-gray-400" />
-              </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No Queries Yet</h3>
-              <p className="text-gray-600 mb-6">You haven't submitted any queries yet.</p>
-              <button
-                onClick={onAskQuery}
-                className="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-medium transition-colors inline-flex items-center space-x-2"
-              >
-                <Plus className="w-5 h-5" />
-                <span>Ask Your First Query</span>
-              </button>
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-50 border-b border-gray-200">
-                  <tr>
-                    <th className="text-left p-4 font-semibold text-gray-900">Subject</th>
-                    <th className="text-left p-4 font-semibold text-gray-900">Assigned To</th>
-                    <th className="text-left p-4 font-semibold text-gray-900">Status</th>
-                    <th className="text-left p-4 font-semibold text-gray-900">Institute</th>
-                    <th className="text-left p-4 font-semibold text-gray-900">Date</th>
-                    <th className="text-left p-4 font-semibold text-gray-900">Action</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200">
-                  {queries.map((query) => (
-                    <tr key={query.id} className="hover:bg-gray-50">
-                      <td className="p-4 w-80 text-left">
-                        <div className="text-sm font-medium text-gray-900 text-left">
-                          {truncateText(query.leadSubject?.replace(/_/g, ' '), 4)}
-                        </div>
-                        <div className="text-xs text-gray-500 mt-0.5 text-left">
-                          {truncateText(query.leadDescription, 5)}
-                        </div>
-                      </td>
-
-
-                      <td className="p-4">
-                        <span className="text-sm text-gray-900">{query.assignedTo || 'Pending'}</span>
-                      </td>
-
-                      <td className="p-4">
-                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(query.leadStatus)}`}>
-                          {formatStatus(query.leadStatus)}
-                        </span>
-                      </td>
-                      <td className="p-4 text-sm text-gray-900">{query.instituteName || 'N/A'}</td>
-
-                      <td className="p-4 text-sm text-gray-600">
-                        {formatDate(query.date)}
-                      </td>
-
-                      <td className="p-4">
-                        <button
-                          onClick={() => setSelectedQuery(query)}
-                          className="text-green-600 hover:text-green-800 text-sm font-medium inline-flex items-center space-x-1"
-                        >
-                          <Eye className="w-4 h-4" />
-                          <span>View</span>
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
     </div>
   );
