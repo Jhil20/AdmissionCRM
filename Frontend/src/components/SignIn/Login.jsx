@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { Mail, Lock, ArrowRight, Eye, EyeOff } from 'lucide-react';
 import { useDispatch } from "react-redux";
+import { useEffect } from 'react';
 import { login, logout } from "../../Slices/AuthSlice"
 import { useNavigate } from 'react-router-dom';
+import { ToastContainer, useToast } from '../Toast/ToastSystem';
 
 
 export default function Login() {
@@ -15,6 +17,7 @@ export default function Login() {
   const dispatch = useDispatch()
 
   const navigate = useNavigate();
+  const {toasts, removeToast, showSuccess, showError, showWarning } = useToast();
 
   const handleSubmit = async () => {
     setError('');
@@ -56,6 +59,18 @@ export default function Login() {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (error) {
+      showError(error);
+    }
+  }, [error])
+  
+  useEffect(() => {
+    if (success) {
+      showSuccess(success);
+    }
+  }, [success])
 
   return (
     <div className="h-screen w-full flex overflow-hidden fixed inset-0">
@@ -168,7 +183,7 @@ export default function Login() {
               </div>
 
               {/* Error Message */}
-              {error && (
+              {/* {error && (
                 <div className="bg-red-50/80 border border-red-200/50 text-red-600 px-4 py-3 rounded-xl text-sm backdrop-blur-sm">
                   {error}
                 </div>
@@ -177,7 +192,7 @@ export default function Login() {
                 <div className="bg-red-50/80 border border-red-200/50 text-green-600 px-4 py-3 rounded-xl text-sm backdrop-blur-sm">
                   {success}
                 </div>
-              )}
+              )} */}
 
               {/* Login Button */}
               <button
@@ -228,6 +243,7 @@ export default function Login() {
           </div>
         </div>
       </div>
+       <ToastContainer toasts={toasts} removeToast={removeToast} />
     </div>
   );
 }

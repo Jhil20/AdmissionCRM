@@ -20,10 +20,17 @@ const Sidebar = () => {
 
   return (
     <div className="w-80 bg-white shadow-lg flex flex-col flex-shrink-0 fixed h-full">
-      <div className="p-6 border-b">
-        <div className="flex flex-col items-start space-y-1">
-          <span className="text-xl font-bold text-gray-900">Pravesh Path</span>
-          <span className="text-sm text-gray-500">Step In, Stand Out</span>
+      <div className="pt-6 pb-4 px-6 border-b">
+        <div className="flex items-center space-x-3">
+          <img
+            src="/public/Logo.png"
+            alt="Pravesh Path Logo"
+            className="h-19 w-10 object-contain"
+          />
+          <div className="flex flex-col items-start space-y-1">
+            <span className="text-xl font-bold text-gray-900">Pravesh Path</span>
+            <span className="text-sm text-gray-500">Step In, Stand Out</span>
+          </div>
         </div>
       </div>
 

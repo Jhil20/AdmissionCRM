@@ -194,22 +194,22 @@ const QueryForm = ({ onClose,admissionInquiryId }) => {
   return (
     <div className="flex-1 bg-gray-50 overflow-auto">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="flex items-center justify-between p-6">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">Ask New Query</h1>
-            <p className="text-gray-600 mt-1">
-              Submit your question about courses and admissions
-            </p>
-          </div>
-          <button
-            onClick={() => onClose(false)}
-            className="text-gray-500 hover:text-gray-700 text-sm font-medium"
-          >
-            Back to Queries
-          </button>
-        </div>
-      </div>
+     <div className="flex items-center justify-between mb-4 p-6 bg-transparent">
+  <div className="flex flex-col items-start">
+    <h1 className="text-2xl font-bold text-green-600">Ask New Query</h1>
+    <p className="text-gray-600 mt-1">
+      Submit your question about courses and admissions
+    </p>
+  </div>
+  <button
+    onClick={() => onClose(false)}
+    className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors"
+  >
+    <span>Back to Queries</span>
+  </button>
+</div>
+
+
 
       {/* Query Form */}
       <div className="max-w-2xl mx-auto p-6">
