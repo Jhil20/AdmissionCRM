@@ -38,6 +38,7 @@ export default function Signup({ onSignup }) {
 
       if (!res.ok) {
         // throw new Error('Signup failed');
+          console.log(res);
         showError('Signup failed. Please check your details and try again.');
         return
       }

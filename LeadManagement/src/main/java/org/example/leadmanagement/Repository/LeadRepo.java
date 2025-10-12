@@ -20,5 +20,5 @@ public interface LeadRepo extends JpaRepository<Lead, String> {
 
     boolean existsByAdmissionInquiry(AdmissionInquiry admissionInquiry);
 
-    Lead findByAdmissionInquiry(AdmissionInquiry admissionInquiry);
+    Lead findTop1ByAdmissionInquiryOrderByCreatedAtDesc(AdmissionInquiry admissionInquiry);
 }
